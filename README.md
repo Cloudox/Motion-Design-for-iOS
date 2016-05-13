@@ -22,6 +22,36 @@
 
 这12个基本动画原则在《Disney Animation: The Illusion of Life》一书中被详细的描述，并且这本书现在被工作于此领域的艺术家和动画师广泛地认为是“动画界的圣经”。即使这些原则是将近80年前的手绘卡通动画师所提出的，它们至今依然使用。
 
+----------
+
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%201/illusion.jpg)
+
+----------
+
+重印版颠倒了标题，将“The Illusion of Life”印在了前面
+
+这些基本的原则是：挤压和拉伸(Squash and stretch)、预备动作 (Anticipation)、演出布局 (Staging)、连续运动和姿态对应 (Straight-Ahead Action and Pose-to-Pose)、跟随和重叠动作 (Follow Through and Overlapping Action)、缓入缓出 (Slow In and Slow Out)、弧线运动 (Arc)、次要动作 (Secondary Action)、时间节奏 (Timing)、夸张手法 (Exaggeration)、扎实的描绘 (Solid drawing)、吸引力 (Appeal)。
+
+设计师Cento Lodigiani创建了一个很棒的video来演示这12个原则，用于一个有魅力的弹性立方体的简单对象。他也将这些例子转换成了一系列的GIF动图。
+
+这些原始的动画原则创建了1920年代到1930年代精心制作的动画的框架。Ollie Johnston 和 Frank Thomas是新的卡通动画时代的先锋，所以我们如何运用这些基本的动画原则来设计现代软件交互呢？在进入这些细节之前，让我们先来谈谈为什么动画应该被用到你的产品中以及一般该如何考虑动画。
+
+### 过渡，焦点和乐趣
+
+当SDK第一次发布时我就开始思考设计和构建iOS app的动画。经过这次思考和所有这些app，我意识到有三个我要为一个iOS app（或者任何数字产品）想象、设计和构建一个动画的关键原因：
+
+1. `过渡：`在两个视觉状态之间突出一个平滑的运动，让用户适应新界面而不是被推进去。像这样的平滑过渡可以减轻对于不熟悉的界面的精神负担。
+
+2.  `焦点：`引导用户关注界面上的一个重要的或者最近更新的特殊部分，尤其是那些需要用户立即操作的元素。
+
+3.  `乐趣：`通过使用奇思妙想或意料之外的动作让一个平凡的交互更加吸引人且有趣。
+
+让我们看一些动画的例子并仔细剖析它们存在的原因以及它们使用这三类动画的目的。
+
+----------
+
+
+
 
 ----------
 更多更新内容参见[我的博客](http://blog.csdn.net/column/details/cloudox-column3.html)  
