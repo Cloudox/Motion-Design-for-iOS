@@ -144,7 +144,7 @@ Paper使用了非常棒的动画框架Pop，Facebook将其发布为开源工程�
 
 
 ----------
-![](http://img.blog.csdn.net/20160502181855078)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%201/xy.gif)
 
 `320*568是iPhone 5屏幕的一倍分辨率。iPhone 6的屏幕是375*667。然而全部真实的像素总数是这个的两倍，但你放置UI对象到屏幕上时不需要考虑这个。`
 
@@ -153,7 +153,7 @@ Paper使用了非常棒的动画框架Pop，Facebook将其发布为开源工程�
 
 
 ----------
-![](http://img.blog.csdn.net/20160502182710932)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%201/alpha.gif)
 
 
 ----------
@@ -161,7 +161,7 @@ Paper使用了非常棒的动画框架Pop，Facebook将其发布为开源工程�
 
 
 ----------
-![](http://img.blog.csdn.net/20160502183147828)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%201/scale.gif)
 
 
 ----------
