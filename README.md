@@ -191,7 +191,7 @@ Paper使用了非常棒的动画框架Pop，Facebook将其发布为开源工程�
 
 
 ----------
-![](http://img.blog.csdn.net/20160502213107817)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%201/color.gif)
 
 
 ----------
@@ -199,7 +199,7 @@ Paper使用了非常棒的动画框架Pop，Facebook将其发布为开源工程�
 
 
 ----------
-![](http://img.blog.csdn.net/20160502213548922)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%201/rotate.gif)
 
 
 ----------
@@ -207,7 +207,7 @@ Paper使用了非常棒的动画框架Pop，Facebook将其发布为开源工程�
 
 
 ----------
-![](http://img.blog.csdn.net/20160502214321318)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%201/3D.gif)
 
 
 ----------
@@ -215,7 +215,7 @@ Paper使用了非常棒的动画框架Pop，Facebook将其发布为开源工程�
 
 
 ----------
-![](http://img.blog.csdn.net/20160502215156048)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%201/clear.png)
 
 Clear中的捏交互
 
