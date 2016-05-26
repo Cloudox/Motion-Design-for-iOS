@@ -246,7 +246,7 @@ Clear中的捏交互
 
 
 ----------
-![](http://img.blog.csdn.net/20160505094025413)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%202/linear.gif)
 
 一个线性动画的时间曲线
 
@@ -262,7 +262,7 @@ Clear中的捏交互
 
 
 ----------
-![](http://img.blog.csdn.net/20160505094051257)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%202/easing.png)
 
 
 ----------
@@ -274,7 +274,7 @@ Clear中的捏交互
 
 
 ----------
-![](http://img.blog.csdn.net/20160505094115680)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%202/easeinout.gif)
 
 
 ----------
