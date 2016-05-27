@@ -288,7 +288,7 @@ Clear中的捏交互
 
 
 ----------
-![](http://img.blog.csdn.net/20160505091830546)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%202/easeout.gif)
 
 
 ----------
@@ -300,7 +300,7 @@ Clear中的捏交互
 
 
 ----------
-![](http://img.blog.csdn.net/20160505092211795)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%202/easein.gif)
 
 
 ----------
@@ -312,7 +312,7 @@ Clear中的捏交互
 
 
 ----------
-![](http://img.blog.csdn.net/20160505093037192)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%202/cubic.gif)
 
 移动控制点是如何影响曲线形状的。
 
