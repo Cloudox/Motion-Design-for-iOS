@@ -329,7 +329,7 @@ Clear中的捏交互
 
 
 ----------
-![](http://img.blog.csdn.net/20160506090805012)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/spring.gif)
 
 弹簧的阻尼
 
@@ -339,7 +339,7 @@ Clear中的捏交互
 
 
 ----------
-![](http://img.blog.csdn.net/20160506091157485)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/damped.png)
 
 阻尼的震荡运动
 
