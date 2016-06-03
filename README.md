@@ -355,7 +355,7 @@ Clear中的捏交互
 
 
 ----------
-![](http://img.blog.csdn.net/20160509142348642)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/threeballs.gif)
 
 
 ----------
@@ -363,7 +363,7 @@ Clear中的捏交互
 
 
 ----------
-![](http://img.blog.csdn.net/20160509143118121)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/springs.jpg)
 
 
 ----------
@@ -373,7 +373,7 @@ Clear中的捏交互
 
 
 ----------
-![](http://img.blog.csdn.net/20160509145730263)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/damped.gif)
 
 
 ----------
