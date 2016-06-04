@@ -383,6 +383,27 @@ Clear中的捏交互
 
 在我们投入动画编码之前，让我们从头开始讨论开发iOS app的基本原则，然后进入界面开发和iOS动画。
 
+### 开始iOS开发
+如果你已经踏入原生iOS app开发之中，你可以跳过这一节去看Core Animation入门。但如果你刚开始iOS app的开发，抓住其基本就很重要，这样你就可以完全理解事物工作的原理。
+
+#### Xcode
+Xcode是Mac和iOS开发者用来创建原生应用的IDE（集成开发环境）。它不仅仅是一个像你可能用过的Sublime Text之类的代码编辑器，它是设计、编程、测试、调试和分发Mac和iOS应用的整个一套功能。有一些编写Mac和iOS app的替代方式，但是大部分的开发者都使用Xcode。要开始接下来的编程实例，你需要有从Mac App Store上下载的最近版本的Xcode。
+
+#### iOS模拟器
+iOS模拟器让你可以在你的Mac上测试你的iOS app，其提供一个窗口让它看起来像是你正在iPhone或者iPad上运行它们。如果你安装了最新版本的Xcode，它会包含iOS模拟器而且可以模拟所有当前的（以及大部分以前的）iOS设备，例如iPhone 4、5、6、6Plus、iPad、iPad retina、iPad mini等等。因为新iPhone的真实分辨率太高了，在第一次运行模拟器的时候你可能会惊讶，因为窗口非常巨大，可能会超过你屏幕的顶部和底部！幸运的是你可以在一个小一些的尺寸上显示模拟器窗口这样就方便看一些。重要的是要记住模拟器不是测试你app的完美方式，唯一获取性能和app感觉的方式是在你的设备上运行它，你可以在Xcode开着的时候将设备连接Mac，跟随指令在你的手机上运行它。
+
+#### Objective-C
+Objective-C是一种编程语言，于1980年代首次出现，并作为编写NeXT计算机的主要语言受到欢迎。当苹果公司买下NeXT后，他们使用了NeXTSTEP操作系统下的技术并用它创建了Mac OS X，从此Mac app和iOS app都使用Objective-C开发。 苹果公司使用Objective-C编写OS X和iOS的所有软件。在最近几年，苹果公司作出了显著的改善让Objective-C更适合新的程序员。
+
+#### Swift
+在2014年夏天的苹果开发者大会，苹果公司宣布他们正在致力于一种新的编程语言，名为Swift，此语言从Objective-C、Rust、Haskell、Ruby、Python和其他语言中获取灵感，创建出他们称为“不要C的Objective-C”的语言。Swift被设计为和已经存在的Cocoa和Cocoa Touch框架协作（苹果公司提供给开发者来创建应用的API库）而且可以和Objective-C在同一个app中共存，但不能在同一个源代码文件中。部分的WWDC app是用Swift编写的，但苹果仍未任何完全用Swift编写的主要软件。当2014年九月初发布iOS 8时，苹果宣布Swift发布了1.0版本并可以安全地使用于发布到App  Store的app中。
+
+我对于Objective-C和Swift的立场是：Swift太新了，而且在走向黄金时代生产app开发前依然有问题需要解决。然而，它的语法比起Objective-C无处不在的的方括号[和]，看起来和JavaScript更为接近，因此它对新的iOS开发者更为诱人。我依然使用Objective-C编写我的app，但随着时间流逝，我会至少在新的工程中部分使用Swift。我对Swift中的一些Objective-C没有的高级语言特性非常期待。本书中的全部动画示例代码都会有Objective-C和Swift两种编写方式，因此你可以理解和观察其区别并自行选择哪一种语言对你的使用更有意义。
+
+如果Objective-C对你来说是全新的，我推荐你阅读我对Objective-C的介绍以及Big Nerd Ranch的[Objective-C Programming book](https://www.bignerdranch.com/we-write/objective-c-programming/)。如果Swift对你来说是全新的（除了苹果公司以外每个人都是这样！）你应该看看iBooks上500页的[Swift Programming Language](https://itunes.apple.com/us/book/swift-programming-language/id881256329?mt=11) 指南，这是免费的。在苹果开发者中心也有一个非常好的[Swift引导](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/Swift_Programming_Language/GuidedTour.html#//apple_ref/doc/uid/TP40014097-CH2-XID_1)。
+
+现在你队iOS开发工具和语言都有了一些接触，让我们开始一些关于iOS app界面是如何创建的以及让它们显示在屏幕上的过程的细节。
+
 
 
 
