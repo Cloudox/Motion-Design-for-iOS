@@ -442,7 +442,7 @@ Core Animation是一个动画和图形合成框架，用于提高速度和效率
 
 
 ----------
-![](http://img.blog.csdn.net/20160512090354587)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/calogo.png)
 
 
 ----------
@@ -450,7 +450,7 @@ Core Animation是一个动画和图形合成框架，用于提高速度和效率
 
 
 ----------
-![](http://img.blog.csdn.net/20160512091348849)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/ca.png)
 
 
 ----------
