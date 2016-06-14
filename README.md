@@ -458,6 +458,99 @@ Core Animation是一个动画和图形合成框架，用于提高速度和效率
 
 虽然你可以只是用`CALayer`不用视图来实现一个app的界面，大部分的iOS开发者仍然都会使用`UIView`对象而不是直接使用`CALayer`对象来构建app界面，除非他们在做一些严肃的图形处理或者一次性布局成百上千的图形。如果你需要直接更改图层属性的话随时都可以获取一个视图的图层，比如说，设置一个视图的圆角弧度就是通过操作视图的`CALayer`属性来完成的。
 
+### 简单动画
+是时候写一些代码了。让我们先添加一个简单的`UIView`对象到屏幕上并设置它的圆角。我们要把它添加到我们的主窗口上时因为它是一个快速的例子，但在真实的app界面中你需要添加到管理当前界面的视图控制器中。
+
+```objective-c
+UIView *redBall = [[UIView alloc] initWithFrame:CGRectMake(50, 50, 100, 100)];
+redBall.backgroundColor = [UIColor redColor];
+redBall.layer.cornerRadius = 50;
+[self.window addSubview:redBall];
+```
+
+我们创建了一个新的`UIView`对象并设置了它的框架来定义它在屏幕上的的X和Y坐标，以及它的宽和高，然后将其添加到屏幕中。我们还将它的背景颜色属性设为了红色。如我前面所说，要让一个视图的角变为圆角，你需要获取它的layer，所以我们设置它的layer.cornerRadius值为50，这是宽度的一半。如果你在你的app的delegate类的-application:didFinishLaunchingWithOptions方法中添加这个代码，就可以在运行后的屏幕上看到它。
+
+
+----------
+![](http://img.blog.csdn.net/20160513092038633)
+
+
+----------
+这里是和上面一样的功能，但是是Swift而不是Objective-C写的。你可以打开Balls In Swift Xcode工程导出这个例子的Swift版本。
+
+```swift
+var redBall = UIView(frame: CGRect(x: 50, y: 50, width: 100, height: 100))
+redBall.backgroundColor = UIColor.redColor()
+redBall.layer.cornerRadius = 50
+view.addSubview(redBall)
+```
+
+我们在屏幕上有了一个红色的球！很激动，我知道。现在我们让它动起来。
+
+iOS提供了一些内置的技术来创建动画：创建并添加一个`CAAnimation`到我们之后要讨论的layer中，或者使用简单的基于block的动画方法来动画化`UIView`的值。让我们创建一个基于block的动画来将圆从1.0扩大到2.0倍，这会让它变成原来的两倍大。
+
+```objective-c
+UIView *redBall = [[UIView alloc] initWithFrame:CGRectMake(50, 50, 100, 100)];
+redBall.backgroundColor = [UIColor redColor];
+redBall.layer.cornerRadius = 50;
+[self.window addSubview:redBall];
+
+[UIView animateWithDuration:.5 delay:0
+    options:UIViewAnimationOptionCurveEaseInOut animations:^{
+    redBall.transform = CGAffineTransformMakeScale(2.0, 2.0);
+} completion:NULL];
+```
+
+这个`UIView`上称为 +animateWithDuration:delay:options:animations:completion: 的类方法时`UIView`提供的多种动画方法之一。第一个安排，持续时间（duration），被设为半秒，第二个安排，延迟（delay），被设为0。
+
+选项（options）参数让我们设置想要使用的动画类型（它还允许你设置一大串其他选项例如在动画完成后自动反转），所以这个简单的测试中我们选择`UIViewAnimationOptionCurveEaseInOut`来将时间设为简单的淡入淡出时间曲线。其他的时间曲线选项还有线性、淡入和淡出。
+
+接下来，动画（animations）安排使用了一个block代码作为值，在block中你可以设置你要动画的视图的最终状态。Core Animation会自动在球的当前尺寸值和你的最终值之间更改来产生一个平滑的动画。这一次，我希望动画能最终让球变成两倍大，所以我设置了球的transform属性为一个新值。transform是一个表述了视图中每个像素根据一些线性代码应该改变的值的矩阵。有很多方式来操作一个视图的transform（尺寸、旋转、位置），所以苹果提供了很多函数来改变你感兴趣的值，在我们的例子中，是尺寸。将transform属性设为`CGAffineTransformMakeScale(2.0, 2.0)意味着我们想要其他所有的值都保持不变，除了尺寸，我们想让尺寸变为原来的两倍。
+
+最后，我们不需要在动画完成后运行任何代码，所以我么你设置完成（completion）的安排为NULL。这里是你再次运行代码后会看到的样子。GIF会回到原始的样子但实际上球并不会。
+
+
+----------
+![](http://img.blog.csdn.net/20160513094301704)
+
+
+----------
+这里是Swift下同样的代码：
+
+```swift
+UIView.animateWithDuration(0.5, delay: 0,
+    options: UIViewAnimationOptions.CurveEaseInOut, animations: {
+    redBall.transform = CGAffineTransformMakeScale(2.0, 2.0)
+}, completion: nil)
+```
+
+在block代码块中我们可以改变很多视图相关的属性，它们会在同一个持续时间内一起动画。现在让我们再添加一些值的改变到动画block中来丰富你使用基于block的动画可以操作的内容。
+
+```objective-c
+UIView *redBall = [[UIView alloc] initWithFrame:CGRectMake(50, 50, 100, 100)];
+redBall.backgroundColor = [UIColor redColor];
+redBall.layer.cornerRadius = 50;
+[self.window addSubview:redBall];
+
+[UIView animateWithDuration:.5 delay:0
+    options:UIViewAnimationOptionCurveEaseInOut animations:^{
+    redBall.backgroundColor = [UIColor greenColor];
+    redBall.transform = CGAffineTransformConcat(
+        CGAffineTransformMakeScale(2.0, 2.0),
+        CGAffineTransformMakeTranslation(75, 0));
+} completion:NULL];
+```
+
+在我们现在的动画block中，我们做了很多事情。首先，我们将视图的背景色从原始的红色改成了绿色。Core Animation会帮我们修改它并处理中间的颜色。接下来，我们改变了两个关于视图的transform的内容：它的尺寸和平移。平移的更改会将视图上、下、左、右移动。在我们的例子中，我们会将它右移75个像素。我们使用了`CGAffineTransformConcat()`函数来将两个更改操作合成了一个，这样就可以分配一个简单矩阵转化给视图。你可以手动构建转变矩阵来包含尺寸和平移更改到一个数据结构中，但我发现让iOS来帮我们结合多个单独的转变到一个最终转变会容易一些。
+
+
+----------
+![](http://img.blog.csdn.net/20160513095716101)
+
+
+----------
+到目前为止有意义吗？围绕转变矩阵的数学有一点复杂和困难，但是苹果让它变得亲近，即使你没有线性代数的背景。动画一个视图的转变矩阵是发动动画最有效的方式之一。
+
 
 
 
