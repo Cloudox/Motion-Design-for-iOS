@@ -472,7 +472,7 @@ redBall.layer.cornerRadius = 50;
 
 
 ----------
-![](http://img.blog.csdn.net/20160513092038633)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/ball.png)
 
 
 ----------
@@ -511,7 +511,7 @@ redBall.layer.cornerRadius = 50;
 
 
 ----------
-![](http://img.blog.csdn.net/20160513094301704)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/ballanim1.gif)
 
 
 ----------
@@ -545,7 +545,7 @@ redBall.layer.cornerRadius = 50;
 
 
 ----------
-![](http://img.blog.csdn.net/20160513095716101)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/ballanim2.gif)
 
 
 ----------
