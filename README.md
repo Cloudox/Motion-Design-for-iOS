@@ -574,7 +574,7 @@ redBall.layer.cornerRadius = 50;
 
 
 ----------
-![](http://img.blog.csdn.net/20160516093937577)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/redspringy.gif)
 
 
 ----------
