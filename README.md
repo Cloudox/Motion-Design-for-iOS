@@ -472,7 +472,7 @@ redBall.layer.cornerRadius = 50;
 
 
 ----------
-![](http://img.blog.csdn.net/20160513092038633)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/ball.png)
 
 
 ----------
@@ -511,7 +511,7 @@ redBall.layer.cornerRadius = 50;
 
 
 ----------
-![](http://img.blog.csdn.net/20160513094301704)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/ballanim1.gif)
 
 
 ----------
@@ -545,11 +545,44 @@ redBall.layer.cornerRadius = 50;
 
 
 ----------
-![](http://img.blog.csdn.net/20160513095716101)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/ballanim2.gif)
 
 
 ----------
 到目前为止有意义吗？围绕转变矩阵的数学有一点复杂和困难，但是苹果让它变得亲近，即使你没有线性代数的背景。动画一个视图的转变矩阵是发动动画最有效的方式之一。
+
+##从iOS 7中的弹簧动画开始
+从iOS 7开始，苹果在他现有的一套动画方法中添加了类弹簧的动画能力。实际上，他们还添加了很多东西；他们的UIKit Dynamics 框架是一个整合到了UIKit中的完整的物理引擎，允许你添加地心引力、弹簧附着、动力等到你的界面元素中。
+
+让我们看看一个iOS 7中介绍的更改了的基于block的动画方法，它现在增加了一些额外的参数来实现类弹簧动画。这个是我们动画代码的更改。
+
+```objective-c
+UIView *redBall = [[UIView alloc] initWithFrame:CGRectMake(50, 50, 100, 100)];
+redBall.backgroundColor = [UIColor redColor];
+redBall.layer.cornerRadius = 50;
+[self.window addSubview:redBall];
+
+[UIView animateWithDuration:3 delay:0 usingSpringWithDamping:.3
+    initialSpringVelocity:0 options:0 animations:^{
+    redBall.transform = CGAffineTransformMakeTranslation(300, 0);
+} completion:NULL];
+```
+
+哇，这是一个长方法！如你所见，有一些我们之前的例子里没有的额外的参数在方法中调用了。参数包括弹簧阻尼和初始弹簧速度。弹簧阻尼是一个0到1之间的值，1模仿一个没有震荡的过阻尼弹簧系统，0表示很有弹力的欠阻尼系统。速度参数用来定义物体开始的快慢，当你使用手势用于用户在屏幕上滑动手指持续一个物体的移动的时候会非常有用。
+
+在我们的例子中我们设置阻尼为0.3（有点弹性），因为我们是用物体静止开始的所以速度为0。因为弹动会使时间变长所以我们也增加了持续时间。
+
+
+----------
+![](http://img.blog.csdn.net/20160516093937577)
+
+
+----------
+就我个人来说，我不认为iOS 7中使用了新block方法的弹簧动画如我所愿地平滑移动，当你想要完善动作时他们也没有提供足够的弹簧属性来操作。还有，如果你在创建一个地图app并想要使用这些UIKit Dynamics中的弹簧动作将是不幸的。如果你的app还需要支持iOS 7之前的版本怎么办？你也是不幸的，因为UIKit Dynamics直到iOS 7才出现并且不能用于之前的版本中。
+
+所以还有什么别的方式可以创建自然的动作、类弹簧的动画呢？其他的可选项是什么？幸运的是，我认为有两个非常好的UIKit Dynamics的替代方式可以解决我上面列出的关于调整属性和不修改太多就能在iOS 6以及Mac OS X上工作的所有问题。我是下面给两个框架的铁杆粉丝，并且在我已发布和未来开发的app上广泛地使用它们。
+
+这两个框架是`JNWSpringAnimation`和`Pop by Facebook`。
 
 
 
