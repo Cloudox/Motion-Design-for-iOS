@@ -593,7 +593,7 @@ JNWSpringAnimation是Jonathan Willing，一个Mac和iOS开发者，写的一个�
 
 
 ----------
-![](http://img.blog.csdn.net/20160519092137051)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/linespring.png)
 
 这种类型的弹簧动画曲线无法通过简单的三维贝塞尔曲线来创建。
 
