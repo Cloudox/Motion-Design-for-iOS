@@ -633,7 +633,7 @@ scale.mass = 2;
 
 
 ----------
-![](http://img.blog.csdn.net/20160523152951119)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo.gif)
 
 
 
