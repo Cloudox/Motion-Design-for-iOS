@@ -593,7 +593,7 @@ JNWSpringAnimation是Jonathan Willing，一个Mac和iOS开发者，写的一个�
 
 
 ----------
-![](http://img.blog.csdn.net/20160519092137051)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/linespring.png)
 
 这种类型的弹簧动画曲线无法通过简单的三维贝塞尔曲线来创建。
 
@@ -605,6 +605,35 @@ JNWSpringAnimation是Jonathan Willing，一个Mac和iOS开发者，写的一个�
 JNWSpringAnimation工作的方式就是定义你的弹簧的关键属性，例如阻尼、刚度和质量，然后告诉它你要动画的属性是什么，JNWSpringAnimation就会为你创建一个包含你的动画的大量值的`CAKeyframeAnimation`，在到达最终值前弹簧动作曲线中的每1/60秒都有值。接着，你要做的只是将这个关键帧动画添加到你想要动画的`CALayer`中去，（可以是它自己的layer，或者是一个`UIView`的layer属性），Core Animation会一步步地执行每个关键帧，每秒60次，直到它到达最终位置动画就结束了。系统不需要知道你是如何生产关键帧列表中的所有值的，也不需要知道它会产生什么类型的动作，它只是盲目地在每一步按照你想要的方式改变动画属性。
 
 详细地说的话，JNWSpringAnimation获取你给它的用来描述你想要在动作中模仿的弹簧的值，并用代码绘制真实的弹簧曲线。然后生成所有的动画关键帧值，它本质上在曲线上每次只走非常小的一步来定义曲线上每1/60秒的值。那就是为物体移动过程中每个位置的值。完成这个过程会非常快，因为要在动画开始前就全部准备好。
+
+让我们看一些使用JNWSpringAnimation来使用不同类型的弹簧动作并有不同属性的动画的例子。在我们的第一个例子中，我们还是要动画之前同样的红色的球，使用我们定义的弹簧管理的弹簧效果将它的尺寸从1提升到2.0倍。
+
+```objective-c
+JNWSpringAnimation *scale =
+    [JNWSpringAnimation animationWithKeyPath:@"transform.scale"];
+```
+
+首先，我们定义我们的`JNWSpringAnimation`对象，一个动画的新实例，命名为scale。我们使用定义的初始化器并将关键路径置为“transform.scale”，不过这表示什么呢？这个关键路径就是指我们想要动画的属性或值。它是视图下的`CALayer`对象的一个属性，也就是我们实际打算使用关键帧动画的动画。还记得`CALayer`是Core Animation中真正的主力么？这是因为当使用类似关键帧动画的动画时，你会将其放置到你想要动画的layer上，而且一般这个layer是`UIView`对象的组成部分。想要动画一个展示照片的`UIImageView`？动画它的layer。想要动画一个`UIButton`？动画它的layer。
+
+基于此我们有一个知道它要作用的属性是什么的`JNWSpringAnimation`对象。是时候通过调整一些弹簧的属性来调整这个动画的动作了。
+
+```objective-c
+JNWSpringAnimation *scale =
+    [JNWSpringAnimation animationWithKeyPath:@"transform.scale"];
+scale.damping = 9;
+scale.stiffness = 100;
+scale.mass = 2;
+```
+
+阻尼、刚度和质量是我们要调整获得我们的球动画的完美的动作的三个重要的弹簧属性。我如何触碰这些值呢？很简单！JNWSpringAnimation也包含了一个Mac app让你交互式地处理这三个值并直接看到结果。
+
+还有一个要注意的重点是你没有在JNWSpringAnimation中像之前在基于block的`UIView`动画中一样设置持续时间。阻尼、刚度和质量三个属性或产生一个一旦系统的力学到达最终值就会在最终值安定下来的弹簧动作。如果你想要缩短你动画的持续时间，就需要调整弹簧的属性才能快一点到达最终值，一般来说会增加弹簧的阻尼属性。通过非人工地操作弹簧动作的整体持续时间，就可以让你在动画的物体想在自然世界中伴随真实弹簧管理其整个动作和持续时间一样移动。这就是JNWSpringAnimation创建的动画看起来非常自然和有趣的原因。
+
+我们刚才将一个红色的球作为动画示例，弹簧的动作并不是关键的，我们何时开始用下一节中定义的动作动画实际的界面元素，以及我们想要实现什么才是关键。这就是为什么一个类似JNWSpringAnimation提供的交互式的弹簧定义的app很重要，当你创建你的动画时它节省了大量的时间。
+
+
+----------
+![](http://img.blog.csdn.net/20160523152951119)
 
 
 
