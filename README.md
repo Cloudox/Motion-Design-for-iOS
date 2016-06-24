@@ -635,6 +635,80 @@ scale.mass = 2;
 ----------
 ![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo.gif)
 
+----------
+一旦你完成你动画的完美动作，你只需要插入阻尼、刚度和质量值到你的动画代码中，然后无论你动画什么都会和你之前正确的值的动作一样。
+
+我们也需要让`JNWSpringAnimation`对象知道我们想要动画属性的开始和结束值是什么。这是用来绘制弹簧和关键帧值的。
+
+```objective-c
+JNWSpringAnimation *scale =
+    [JNWSpringAnimation animationWithKeyPath:@"transform.scale"];
+scale.damping = 9;
+scale.stiffness = 100;
+scale.mass = 2;
+scale.fromValue = @(1.0);
+scale.toValue = @(2.0);
+```
+
+现在我们的`JNWSpringAnimation`对象知道了它的开始值和结束值，以及我们想要模仿的弹簧的准确属性，我们现在可以把它添加到我们想要移动的`CALayer`上去了。在我们的例子中，我们要将它添加到redBall上去。
+
+```objective-c
+JNWSpringAnimation *scale =
+    [JNWSpringAnimation animationWithKeyPath:@"transform.scale"];
+scale.damping = 9;
+scale.stiffness = 100;
+scale.mass = 2;
+scale.fromValue = @(1.0);
+scale.toValue = @(2.0);
+
+[redBall.layer addAnimation:scale forKey:scale.keyPath];
+```
+
+这个名为scale的动画现在根据给定的关键路径（又称为我们想要在layer上改变的值）被添加到redBall.layer中了。我们可以将“transform.scale”传入到forkey:的参数中，但我们也可以只传入准确的我们创建的动画关键路径，这样我们就不会混淆`JNWSpringAnimation`的关键路径和我们要协调动画时使用的关键路径。在这个例子中，我们创建动画使用的关键路径“transform.scale”可以直接写成scale.keyPath.
+
+如果我们创建并运行我们的代码，这就是产生的动画。
+
+
+----------
+![](http://img.blog.csdn.net/20160524092452278)
+
+
+----------
+现在如果你想要在Swift工程中使用`JNWSpringAnimation`，由于你是使用一个Objective-C框架，你需要使用一些称为“桥街头”的东西让Xcode知道你想要在你的Swift代码中使用非Swift的框架。所以首先，我拖动称为JNWSwift的我需要使用`JNWSpringAnimation`的.h和.m文件到Xcode中的我的Swift工程中（包含到Xcode工程文件中）。Xcode就会询问是否要创建一个桥街头，我选择要，这就是哪个特殊文件的内容。
+
+```objective-c
+// This is within the JNWSwift-Bridging-Header.h file
+// that was automatically created for me
+
+#import "JNWSpringAnimation.h"
+#import "NSValue+JNWAdditions.h"
+```
+
+任何添加到这个特殊的桥街头文件中的Objective-C头文件都会被设为Swift可见，这样你就可以使用Swift来交互它们的Objective-C函数。酷的地方在于当你想要在你的Swift代码中使用它们时，你不需要有任何`import`说明，Xcode会处理它。
+
+当设置好桥街头之后，你就可以进入你的Swift代码中并开始处理你想要操作的对象，在这个例子中，就是`JNWSpringAnimation`。这里是我用Swift写的创建与上面的例子一样的动画的代码，依然是使用`JNWSpringAnimation`。
+
+```objective-c
+let scale = JNWSpringAnimation(keyPath: "transform.scale")
+scale.damping = 9.0
+scale.stiffness = 100
+scale.mass = 2
+scale.fromValue = NSNumber(float: 1.0)
+scale.toValue = NSNumber(float: 2.0)
+
+redBall.layer.addAnimation(scale, forKey: scale.keyPath)
+```
+
+它看起来和上面的Objective-C代码非常接近，但是当然没有包含调用方法的方括号，并且如果你写过JavaScript的话，它看起来与其非常相似。
+
+这就是Swift代码和Objective-C代码会创建的一样的动画。
+
+
+----------
+![](http://img.blog.csdn.net/20160524095352567)
+
+----------
+
 
 
 
