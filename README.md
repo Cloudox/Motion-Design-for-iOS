@@ -670,7 +670,7 @@ scale.toValue = @(2.0);
 
 
 ----------
-![](http://img.blog.csdn.net/20160524092452278)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo2.gif)
 
 
 ----------
@@ -705,7 +705,7 @@ redBall.layer.addAnimation(scale, forKey: scale.keyPath)
 
 
 ----------
-![](http://img.blog.csdn.net/20160524095352567)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo2.gif)
 
 ----------
 
