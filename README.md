@@ -709,6 +709,41 @@ redBall.layer.addAnimation(scale, forKey: scale.keyPath)
 
 ----------
 
+球的动画是从其原始尺寸增加到两倍大然后立即跳回其原始尺寸。这确实是我们上面所写代码的准确行为，但球在动画完成后跳回到起原始尺寸的原因却是需要重点理解的。
+
+Core Animation在任何给出的时间内会维持三个你的层的集合或者树。每个层树都会在你的界面显示过程中扮演一个重要的角色。
+
+1. `模型层树。`模型层树反映了一个layer静止不动画时的所有属性。比如说，当我们设置redBall.layer.cornerRadius到50来让它变成球时，我们就是在模型层上设置属性。模型层上的值是你的app交互的最多的。任何时候你改变一个layer的值时，都在更新它的模型层。模型层上的值不会在动画过程中改变，并会持续反应你添加动画前的值。
+2.  `表现层树。`表现层树反映了动画时layer上的属性，并包含了运行动画时的变化值。你不应该在这个层树上设置任何值，通常都是在想要准确了解一个layer在哪或是其在动画过程中的行为时通过查看当前的动画值来与表现层树交互。
+3.  `渲染树。`渲染树时苹果的私有值集合，用来执行渲染到屏幕上的实际绘制。你不需要与其交互或知道这些值。
+
+当我们添加一个动画到layer的时候，动画会在layer 的表现树上操作这些值，当动画完成的时候，动画会自动从layer移除，并且表现树的值会变回模型树的值，因为这些值反映了真实、静止的layer属性。
+
+如果我们想要layer 的属性更新为动画的最终值，我们需要明确地说明。对，我知道折痕奇怪，但因为Core Animation允许开发者构建非常多类型的动画，它们需要支持有些时候你确实想要你的动画被移除然后layer回到其原始位置的使用案例。
+
+这里是在末尾添加了决定性的一行后的代码示例。
+
+```objective-c
+JNWSpringAnimation *scale =
+    [JNWSpringAnimation animationWithKeyPath:@"transform.scale"];
+scale.damping = 9;
+scale.stiffness = 100;
+scale.mass = 2;
+scale.fromValue = @(1.0);
+scale.toValue = @(2.0);
+
+[redBall.layer addAnimation:scale forKey:scale.keyPath];
+redBall.transform = CGAffineTransformMakeScale(2.0, 2.0);
+```
+
+通过手动地设置redBall的transform属性为两倍比例，并匹配动画的最终值，动画会在移除的时候将实际的layer上的transform值无缝更新为匹配动画的最终值。现在球就会维持在2倍大小了。GIF依然会回到起始位置，不过在代码中球不会。
+
+
+----------
+![](http://img.blog.csdn.net/20160526103528313)
+
+
+----------
 
 
 
