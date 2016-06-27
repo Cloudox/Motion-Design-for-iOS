@@ -740,7 +740,7 @@ redBall.transform = CGAffineTransformMakeScale(2.0, 2.0);
 
 
 ----------
-![](http://img.blog.csdn.net/20160526103528313)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo3.gif)
 
 
 ----------
