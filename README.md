@@ -745,6 +745,55 @@ redBall.transform = CGAffineTransformMakeScale(2.0, 2.0);
 
 ----------
 
+你可能会想，我们使用基于block的UIView动画时并不需要处理这些，完全正确。`UIView`上基于block的动画方法是一个创建简单动画的更方便的方式，因为它们会自动保留最终值而无需去设置。当然了，你会被默认的过渡动作或者iOS 7提供的简单的弹簧动作所限制。如果你想要完整控制你的动画并想要细致地调整你的弹簧属性，你就需要奔向真实的`CAAnimation`对象，`JNWSpringAnimation`就是其中之一。
+
+使用类似JNWSpringAnimation弹簧动画框架的真实诱惑是你可以获得对你弹簧力学的精确控制，所以让我们看看更多使用不同弹簧动作的红球的例子。
+
+```objective-c
+JNWSpringAnimation *scale =
+    [JNWSpringAnimation animationWithKeyPath:@"transform.scale"];
+scale.damping = 13;
+scale.stiffness = 540;
+scale.mass = 11;
+
+scale.fromValue = @(1.0);
+scale.toValue = @(2);
+
+[redBall.layer addAnimation:scale forKey:scale.keyPath];
+redBall.transform = CGAffineTransformMakeScale(2.0, 2.0);
+```
+
+这些弹簧属性产生了一个更慢、更深的移动。
+
+
+----------
+![](http://img.blog.csdn.net/20160527092015650)
+
+
+----------
+下一个例子没有任何弹性，但有一个指数衰减动作来慢慢地到达最终值。这是模仿过阻尼的弹簧系统。这个动作类似于简单的淡出动作，但到达最终值时会更加的轻缓。我们也可以通过操作阻尼和刚度属性来调整其到达最终值的速度。
+
+```objective-c
+// 所有其他部分的代码都是一样的
+scale.damping = 6;
+scale.stiffness = 6;
+scale.mass = 1;
+```
+
+
+----------
+![](http://img.blog.csdn.net/20160527092512180)
+
+
+----------
+这里是三个并排的球，第一个的阻尼为6、刚度为6、质量为1。第二个阻尼为15、刚度为15、质量为1。第三个阻尼为30、刚度为30、质量为1。他们都是指数衰减型的动作，但他们到达最终值的速度不同。
+
+
+----------
+![](http://img.blog.csdn.net/20160527092717089)
+
+
+----------
 
 
 
