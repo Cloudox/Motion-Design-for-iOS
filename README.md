@@ -767,7 +767,7 @@ redBall.transform = CGAffineTransformMakeScale(2.0, 2.0);
 
 
 ----------
-![](http://img.blog.csdn.net/20160527092015650)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo4.gif)
 
 
 ----------
@@ -782,7 +782,7 @@ scale.mass = 1;
 
 
 ----------
-![](http://img.blog.csdn.net/20160527092512180)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemoexpo.gif)
 
 
 ----------
@@ -790,7 +790,7 @@ scale.mass = 1;
 
 
 ----------
-![](http://img.blog.csdn.net/20160527092717089)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo3balls.gif)
 
 
 ----------
