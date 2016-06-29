@@ -767,7 +767,7 @@ redBall.transform = CGAffineTransformMakeScale(2.0, 2.0);
 
 
 ----------
-![](http://img.blog.csdn.net/20160527092015650)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo4.gif)
 
 
 ----------
@@ -782,7 +782,7 @@ scale.mass = 1;
 
 
 ----------
-![](http://img.blog.csdn.net/20160527092512180)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemoexpo.gif)
 
 
 ----------
@@ -790,11 +790,117 @@ scale.mass = 1;
 
 
 ----------
-![](http://img.blog.csdn.net/20160527092717089)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo3balls.gif)
 
 
 ----------
 
+我大部分展示的比例变更动画，但这不意味着你不能动画layer的更多属性！这里就是使用JNWSpringAnimation来使用弹簧动作旋转一个layer的示例。
+
+```objective-c
+JNWSpringAnimation *scale =
+    [JNWSpringAnimation animationWithKeyPath:@"transform.rotation"];
+scale.damping = 10;
+scale.stiffness = 100;
+scale.mass = 3;
+
+scale.fromValue = @(0);
+scale.toValue = @(M_PI_2);
+
+[redBall.layer addAnimation:scale forKey:scale.keyPath];
+redBall.transform = CGAffineTransformMakeRotation(M_PI_2);
+```
+
+由于这是一个旋转动画，开始和结束值是由弧度定义的角度。我们使用便利的函数`CGAffineTransformMakeRotation()`来设置模型层的最终值为2π。
+
+
+----------
+![](http://img.blog.csdn.net/20160530111058554)
+
+
+----------
+接下来我们要设置弹簧的阻尼和刚度为如之前展示的3个层示例一般会导致指数衰减类型动作的类似值。我们会动画其位置，而不是layer的比例。
+
+```objective-c
+JNWSpringAnimation *scale = [JNWSpringAnimation
+    animationWithKeyPath:@"transform.translation.x"];
+scale.damping = 7;
+scale.stiffness = 7;
+scale.mass = 1;
+
+scale.fromValue = @(0);
+scale.toValue = @(400);
+
+[redBall.layer addAnimation:scale forKey:scale.keyPath];
+redBall.transform = CGAffineTransformMakeTranslation(400, 0);
+```
+
+我们要动画的位置关键路径为“transform.translation.x”，是从左到右的位置——x坐标。我们会将其向右移动400个像素，所以toValue是400，要设置最终值并保持球在我们动画的地方，我们需要设置球的transform到`CGAffineTransformMakeTranslation(400, 0)`。这个函数是一个改变视图的变化矩阵的平移组件的简单方式，它接收两个参数，x和y的变化。
+
+
+----------
+![](http://img.blog.csdn.net/20160530112904855)
+
+
+----------
+当然，我们可以一次性动画很多属性。这里是一个同时动画比例和旋转的代码。看你能不能发现与单个属性动画的区别。
+
+```objective-c
+JNWSpringAnimation *scale = [JNWSpringAnimation
+    animationWithKeyPath:@"transform.scale"];
+scale.damping = 9;
+scale.stiffness = 9;
+scale.mass = 1;
+scale.fromValue = @(1);
+scale.toValue = @(4.0);
+
+[redBall.layer addAnimation:scale forKey:scale.keyPath];
+redBall.transform = CGAffineTransformScale(redBall.transform, 4.0, 4.0);
+
+JNWSpringAnimation *rotate = [JNWSpringAnimation
+    animationWithKeyPath:@"transform.rotation"];
+rotate.damping = 9;
+rotate.stiffness = 9;
+rotate.mass = 1;
+rotate.fromValue = @(0);
+rotate.toValue = @(M_PI);
+
+[redBall.layer addAnimation:rotate forKey:rotate.keyPath];
+redBall.transform = CGAffineTransformRotate(redBall.transform, M_PI);
+```
+
+第一个动画是一个比例变化，从1.0到4.0变成四倍大小。与之前的例子的代码相比第一个不同是当我们在添加动画后设置模型层的实际变化值时（所以它才能保持最终值。）不是使用`CGAffineTransformMakeScale()`函数来进入新的比例，而是使用了名称相似容易混淆的`CGAffineTransformScale()`函数并接收了三个参数。`CGAffineTransformMakeScale()`（包含make在其中）假设你想改变到的变化矩阵是常规、默认、未触摸的恒等变换的变化矩阵，其刚刚创建了此时的视图。
+
+另一方面接收三个参数的`CGAffineTransformScale()`，第一个参数是你想要改变的起始的变化矩阵。这可以是恒等变化或者一个已经有了一些操作的变形，比如已经被旋转了、伸缩了、平移了等等。我们使用这个函数并且将视图当前的变形作为第一个参数的原因是我们正在添加两个动画到其中并且它们都会操作layer的变形矩阵。如果我们使用`CGAffineTransformMakeScale()`，就会影响所有的第二个动画的变形调整，使用开始的恒等变换，而不是最近更新的第二次动画设置的layer变形。通过引入当前的变形值，我们可以确保对我们的操作使用最近的值，而这就会包含第二个动画的最终值。
+
+第二个动画会旋转我们的对象π的角度。让我们看看包含比例和旋转变形的动画看起来什么样。
+
+
+----------
+![](http://img.blog.csdn.net/20160530145012060)
+
+
+----------
+很酷对吧，我们不需要对每个动画设置同样的时间曲线；因为这是两个单独的动画对象，我们可以单独地控制每个弹簧的属性。这里是一个比例和旋转动画的例子，其比例弹簧使用了一个指数衰减类型的弹簧动作（没有弹性），而旋转动画动作非常有弹性。
+
+
+----------
+![](http://img.blog.csdn.net/20160530145304608)
+
+
+----------
+这里是另一个同时添加两个动画的例子。这次它组合了一个位置（平移）动画和一个比例变形。
+
+
+----------
+![](http://img.blog.csdn.net/20160530145407453)
+
+
+----------
+我不知道你如何，但我对于仅仅动画这些色块已经有点无聊了。我认为是时候进入一些使用JNWSpringAnimation来实现弹簧动作动画的真实世界、真实app的例子了。
+
+
+----------
 
 
 ----------
