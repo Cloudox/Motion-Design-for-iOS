@@ -815,7 +815,7 @@ redBall.transform = CGAffineTransformMakeRotation(M_PI_2);
 
 
 ----------
-![](http://img.blog.csdn.net/20160530111058554)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemorotate.gif)
 
 
 ----------
@@ -839,7 +839,7 @@ redBall.transform = CGAffineTransformMakeTranslation(400, 0);
 
 
 ----------
-![](http://img.blog.csdn.net/20160530112904855)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemobrown.gif)
 
 
 ----------
@@ -877,7 +877,7 @@ redBall.transform = CGAffineTransformRotate(redBall.transform, M_PI);
 
 
 ----------
-![](http://img.blog.csdn.net/20160530145012060)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo5.gif)
 
 
 ----------
@@ -885,7 +885,7 @@ redBall.transform = CGAffineTransformRotate(redBall.transform, M_PI);
 
 
 ----------
-![](http://img.blog.csdn.net/20160530145304608)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo6.gif)
 
 
 ----------
@@ -893,7 +893,7 @@ redBall.transform = CGAffineTransformRotate(redBall.transform, M_PI);
 
 
 ----------
-![](http://img.blog.csdn.net/20160530145407453)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo7.gif)
 
 
 ----------
