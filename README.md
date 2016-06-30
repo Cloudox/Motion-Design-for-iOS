@@ -911,7 +911,7 @@ redBall.transform = CGAffineTransformRotate(redBall.transform, M_PI);
 
 
 ----------
-![](http://img.blog.csdn.net/20160603095458170)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/ios7alert.gif)
 
 
 ----------
@@ -926,7 +926,7 @@ redBall.transform = CGAffineTransformRotate(redBall.transform, M_PI);
 
 
 ----------
-![](http://img.blog.csdn.net/20160603100823438)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alertfinal.gif)
 
 
 ----------
@@ -960,7 +960,7 @@ overlayView.alpha = 0.0f;
 
 
 ----------
-![](http://img.blog.csdn.net/20160613093236714)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alert1.png)
 
 
 ----------
