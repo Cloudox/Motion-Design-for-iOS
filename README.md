@@ -902,6 +902,67 @@ redBall.transform = CGAffineTransformRotate(redBall.transform, M_PI);
 
 ----------
 
+现在我们已经了解了Core Animation的基础并且使用了优秀的框架JNWSpringAnimation来模仿弹簧系统，是时候来开始写一些真实的示例代码了。
+
+###仿制一个iOS AlertView
+重现一个熟悉的界面元素是一个很好的熟悉动画开发的方式。首先，让我们创建我们自己的标准iOS警告视图。这是内置的警告视图的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160603095458170)
+
+
+----------
+在本指南之前的章节中，我解释了分解一个动画的各个组成部分有多么重要，这样你就可以准确地构建它。仅仅说“警告框动画进入屏幕”是不够的，你需要准确地知道发生了什么。让我们来分解这个动画。
+
+1. 屏幕随着渐入的一层半透明灰覆盖变暗。
+2. 警告框从完全透明以及比1.0倍大的大小开始，并动画至100%不透明和1.0倍大小。
+3. 消失的时候，它会淡出为完全透明并且比例会动画减小到比1.0要小。
+4. 阴暗的覆盖层淡出并消失。
+
+在我们进入详细的代码之前，让我们看看我们要完成的警告框是什么样子的。
+
+
+----------
+![](http://img.blog.csdn.net/20160603100823438)
+
+
+----------
+首先让我们创建一个简单的有白色背景的应用窗口。这是在应用的delegate类中，并且代码会在app完成启动的时候就立即运行。你可以在Alert View 1 Xcode工程中参考代码。
+
+```objective-c
+- (BOOL)application:(UIApplication *)application
+    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+	
+    // Construct the main window for this application
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+
+    // All additional code in this example will go right here
+
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+    return YES;
+}
+```
+
+在这一步，我们有一个`UIWindow`，其位置和方向可以准确地填充屏幕，并且背景色被设为了白色。如果我们现在立马运行它，它只会在模拟器中（或者你的手机，如果连接了的话）运行一个空的、白色的应用屏幕。现在来创建我们的覆盖层，将其添加到屏幕上，并将透明度设为0.0，因为我们现在不想显示它。
+
+```objective-c
+UIView *overlayView = [[UIView alloc] initWithFrame:self.window.bounds];
+overlayView.backgroundColor = [UIColor blackColor];
+overlayView.alpha = 0.0f;
+[self.window addSubview:overlayView];
+```
+
+这个覆盖层是一个简单的`UIView`，填充了整个主窗口对象。这意味着它会被放置在窗口的左上角，并且其宽和高会匹配窗口，从而覆盖所有的内容。为了显示我现在有的内容，如果我提高覆盖层的不透明度，这就是看起来的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160613093236714)
+
+
+----------
+
 
 ----------
 更多更新内容参见[我的博客](http://blog.csdn.net/column/details/cloudox-column3.html)  
