@@ -5,6 +5,7 @@
 * [SECTION 1](#SECTION 1)
 * [SECTION 2](#SECTION 2)
 * [SECTION 3](#SECTION 3)
+* [SECTION 4](#SECTION 4)
 
 ## <a name="SECTION 1"/>SECTION 1
 在2013年六月，苹果推出了iOS 7，并与iOS 6大相径庭，让设计师回归本初。曾经代表漂亮iOS设计的现实主义拟物化离去了，而一个更加平面、光滑，更加“计算机真实”的美学到来了。这种向平面设计专项的一个重大影响就是在Photoshop（或者任何可选的设计工具）中进行一个设计变得更简单、花费更少的时间、并且不再有差异。创建一个有着漂亮现实渐变色、阴影和高亮的app界面是一件很艰苦的事情。而创建一个根本没有渐变色和阴影并且主要由大块相同颜色组成的app界面明显更简单。
@@ -815,7 +816,7 @@ redBall.transform = CGAffineTransformMakeRotation(M_PI_2);
 
 
 ----------
-![](http://img.blog.csdn.net/20160530111058554)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemorotate.gif)
 
 
 ----------
@@ -839,7 +840,7 @@ redBall.transform = CGAffineTransformMakeTranslation(400, 0);
 
 
 ----------
-![](http://img.blog.csdn.net/20160530112904855)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemobrown.gif)
 
 
 ----------
@@ -877,7 +878,7 @@ redBall.transform = CGAffineTransformRotate(redBall.transform, M_PI);
 
 
 ----------
-![](http://img.blog.csdn.net/20160530145012060)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo5.gif)
 
 
 ----------
@@ -885,7 +886,7 @@ redBall.transform = CGAffineTransformRotate(redBall.transform, M_PI);
 
 
 ----------
-![](http://img.blog.csdn.net/20160530145304608)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo6.gif)
 
 
 ----------
@@ -893,11 +894,73 @@ redBall.transform = CGAffineTransformRotate(redBall.transform, M_PI);
 
 
 ----------
-![](http://img.blog.csdn.net/20160530145407453)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%203/jnwdemo7.gif)
 
 
 ----------
 我不知道你如何，但我对于仅仅动画这些色块已经有点无聊了。我认为是时候进入一些使用JNWSpringAnimation来实现弹簧动作动画的真实世界、真实app的例子了。
+
+
+----------
+
+## <a name="SECTION 4"/>SECTION 4
+现在我们已经了解了Core Animation的基础并且使用了优秀的框架JNWSpringAnimation来模仿弹簧系统，是时候来开始写一些真实的示例代码了。
+
+###仿制一个iOS AlertView
+重现一个熟悉的界面元素是一个很好的熟悉动画开发的方式。首先，让我们创建我们自己的标准iOS警告视图。这是内置的警告视图的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160603095458170)
+
+
+----------
+在本指南之前的章节中，我解释了分解一个动画的各个组成部分有多么重要，这样你就可以准确地构建它。仅仅说“警告框动画进入屏幕”是不够的，你需要准确地知道发生了什么。让我们来分解这个动画。
+
+1. 屏幕随着渐入的一层半透明灰覆盖变暗。
+2. 警告框从完全透明以及比1.0倍大的大小开始，并动画至100%不透明和1.0倍大小。
+3. 消失的时候，它会淡出为完全透明并且比例会动画减小到比1.0要小。
+4. 阴暗的覆盖层淡出并消失。
+
+在我们进入详细的代码之前，让我们看看我们要完成的警告框是什么样子的。
+
+
+----------
+![](http://img.blog.csdn.net/20160603100823438)
+
+
+----------
+首先让我们创建一个简单的有白色背景的应用窗口。这是在应用的delegate类中，并且代码会在app完成启动的时候就立即运行。你可以在Alert View 1 Xcode工程中参考代码。
+
+```objective-c
+- (BOOL)application:(UIApplication *)application
+    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+	
+    // Construct the main window for this application
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+
+    // All additional code in this example will go right here
+
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+    return YES;
+}
+```
+
+在这一步，我们有一个`UIWindow`，其位置和方向可以准确地填充屏幕，并且背景色被设为了白色。如果我们现在立马运行它，它只会在模拟器中（或者你的手机，如果连接了的话）运行一个空的、白色的应用屏幕。现在来创建我们的覆盖层，将其添加到屏幕上，并将透明度设为0.0，因为我们现在不想显示它。
+
+```objective-c
+UIView *overlayView = [[UIView alloc] initWithFrame:self.window.bounds];
+overlayView.backgroundColor = [UIColor blackColor];
+overlayView.alpha = 0.0f;
+[self.window addSubview:overlayView];
+```
+
+这个覆盖层是一个简单的`UIView`，填充了整个主窗口对象。这意味着它会被放置在窗口的左上角，并且其宽和高会匹配窗口，从而覆盖所有的内容。为了显示我现在有的内容，如果我提高覆盖层的不透明度，这就是看起来的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160613093236714)
 
 
 ----------
