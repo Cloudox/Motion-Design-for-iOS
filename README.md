@@ -965,6 +965,55 @@ overlayView.alpha = 0.0f;
 
 ----------
 
+现在让我们着手我们的警告框界面，为了便于在这个demo中实现，会仅仅是一个简单的图片而不是一个有label和按钮的纯代码的界面。让我们开始创建这个界面。
+
+```objective-c
+CGFloat alertDimension = 250;
+CGRect alertViewFrame = CGRectMake(
+    self.window.bounds.size.width/2 - alertDimension/2,
+    self.window.bounds.size.height/2 - alertDimension/2,
+    alertDimension, alertDimension);
+UIView *alertView = [[UIView alloc] initWithFrame:alertViewFrame];
+```
+
+首先，我们需要创建一个`UIView`对象来作为我们的虚拟警告框，并将其位置设为屏幕的正中央。这是通过将全屏幕的宽和高除以2并减去警告框的宽和高的一半完成的。我喜欢设置一个对象的frame到它完成动画后的最终位置，然后通过操作它的transform属性来调整它的大小或者位置。通过这种方式，当添加动画时，比起重新计算它的`CGRect`frame，我可以移除transform上已完成的操作。这也是为什么如果我想要它变成1.5倍，比起动画它的整个frame，不得不计算在像素层面它的位置和大小是多少，我更喜欢以好的、简单的增加来动画一个视图的transform.scale，而前一种方式是很痛苦的。保持简单。
+
+是时候设置一些关键属性了。
+
+```objective-c
+alertView.backgroundColor = [UIColor colorWithPatternImage:
+    [UIImage imageNamed:@"alert_box"]];
+alertView.alpha = 0.0f;
+alertView.transform = CGAffineTransformMakeScale(1.2, 1.2);
+alertView.layer.cornerRadius = 10;
+```
+
+在这段代码中我们做了四件事：
+
+1. 设置backgroundColor属性为一个图片，这是我创建的看起来像是一个好看、简单的警告框视图的图片。
+2. 设置alpha为0，这样警告框就不会立马可见，直到我们想要它动画进入。
+3. 通过`CGAffineTransformMakeScale()`函数在变换矩阵中仅仅操作比例值来设置它的transform属性来让比例更大些。
+4. 通过设置视图layer的cornerRadius属性来形成圆角。
+
+让我们给它加一点阴影来完成我们警告框的配置。
+
+```objective-c
+alertView.layer.shadowColor = [UIColor blackColor].CGColor;
+alertView.layer.shadowOffset = CGSizeMake(0, 5);
+alertView.layer.shadowOpacity = 0.3f;
+alertView.layer.shadowRadius = 10.0f;
+[self.window addSubview:alertView];
+```
+
+如果我将alpha值调回1.0并移除比例增加的变换然后截屏，这就是它看起来的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160623092959159)
+
+
+----------
+
 
 ----------
 更多更新内容参见[我的博客](http://blog.csdn.net/column/details/cloudox-column3.html)  
