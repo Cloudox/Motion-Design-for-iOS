@@ -1009,7 +1009,7 @@ alertView.layer.shadowRadius = 10.0f;
 
 
 ----------
-![](http://img.blog.csdn.net/20160623092959159)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alert2.gif)
 
 
 ----------
