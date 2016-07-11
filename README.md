@@ -1050,7 +1050,7 @@ alertView.transform = CGAffineTransformMakeScale(1.0, 1.0);
 
 
 ----------
-![](http://img.blog.csdn.net/20160624093519283)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alert4.gif)
 
 
 ----------
