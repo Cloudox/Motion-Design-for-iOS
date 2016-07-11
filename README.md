@@ -1009,7 +1009,48 @@ alertView.layer.shadowRadius = 10.0f;
 
 
 ----------
-![](http://img.blog.csdn.net/20160623092959159)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alert2.gif)
+
+
+----------
+
+是时候添加一些动画了。为了警告框的显示，如我之前所说，我们想要覆盖层从完全透明（不可见）变成半透明。我们还想要添加两个动画到警告框中：将不透明度从0.0动画到1.0，以及将比例从大于1.0动画到1.0。这就是iOS 7的警告框做的事情，所以我们要模仿它。
+
+首先让我们处理两个不透明度的动画（覆盖层和警告框视图），因为不透明度动画一般不需要任何高级的弹簧动作，让我们使用一些简单的基于block的`UIView`动画。
+
+```objective-c
+// 淡入灰色的封盖层和警告框视图
+[UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut
+    animations:^{
+    overlayView.alpha = 0.3f;
+    alertView.alpha = 1.0f;
+} completion:NULL];
+```
+
+我们同时在一个block中动画覆盖层和警告框视图的不透明度。这是因为我想要覆盖层和警告框在同一个动画和同样的时间中呈现给用户，所以为什么不一起动画它们呢？我将持续时间调整到比三分之一秒略少。我是通过尝试很多时间、运行动画、并做出对这个类型动画合适的选择来得出这个时间的。当显示一个重要的信息给用户时，比如警告框，使用一个柔和的动画时间是比较好的，这样实际的过渡会显得更重要。不要太快地显示出来，一个稍缓慢的时间会让信息显得更有分量和势头，且用户应该关注。
+
+现在是时候动画警告框的比例了。这次我确实想用一个更加高级的弹簧动作来让进入比起上面例子中基于block的简单的淡入动画更有趣。在标准iOS警告款视图中，苹果公司没有弹动警告框，而是使用了一个缓慢衰减的动画来慢慢到达最终值。我们会协调弹簧动画的damping和stiffness属性来达到这样的效果。
+
+```objective-c
+// Scale-animate in the alert view
+JNWSpringAnimation *scale = [JNWSpringAnimation animationWithKeyPath:@"transform.scale"];
+scale.damping = 14;
+scale.stiffness = 14;
+scale.mass = 1;
+scale.fromValue = @(1.2);
+scale.toValue = @(1.0);
+
+[alertView.layer addAnimation:scale forKey:scale.keyPath];
+alertView.transform = CGAffineTransformMakeScale(1.0, 1.0);
+```
+
+这个动画的关键路径是“transform.scale”，因为这就是layer上我们想要操作的属性。还记得我们第一次创建这个`UIView`并设其transform属性为`CGAffineTransformMakeScale(1.2, 1.2)`么？这就是我们开始的的fromValue，即当前的比例尺寸，我们要将其动画回1.0的比例，这是正常的尺寸和大小。
+
+这就是现在动画看起来的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160624093519283)
 
 
 ----------
