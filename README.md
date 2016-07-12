@@ -1055,6 +1055,48 @@ alertView.transform = CGAffineTransformMakeScale(1.0, 1.0);
 
 ----------
 
+很好，警告框已经准确地处于屏幕的中间，并且有我想要的动画。现在让我们开发消失的动画。
+
+就如我们起初显示警告框并且确保它不会出现的太快一样，当警告框消失时我们需要思考一下时间应该是什么样的。我不知道你怎么想，但当我关闭一个警告框时，我想要立即回到我之前被打断的内容里去，所以基于此，我总是喜欢以比显示它更快的速度来清楚它。没必要让动画两端的时间保持对称，如果对用户有意义的话，可以调整动画的时间。
+
+```objective-c
+// 淡出覆盖层和警告框
+[UIView animateWithDuration:.15 delay:0 options:UIViewAnimationOptionCurveEaseInOut
+    animations:^{
+    overlayView.alpha = 0.0f;
+    alertView.alpha = 0.0f;
+} completion:NULL];
+```
+
+因为我们在回转我们的初始动画，我们现在需要将覆盖层和警告框视图的不透明度退回到0。同样，因为我想要这两个同时动画，所以我将它们放到同一个基于block动画中。注意这个淡出动画的时间只有淡入动画的一般长。我们想要让警告框离开屏幕的时候显得很爽利，让持续时间变短则可以完成这一需求。
+
+接下来我们需要在其淡出到0不透明度的同时缩小警告框。
+
+```objective-c
+// 警告框的缩小动画
+JNWSpringAnimation *scaleOut = [JNWSpringAnimation
+    animationWithKeyPath:@"transform.scale"];
+scaleOut.damping = 11;
+scaleOut.stiffness = 11;
+scaleOut.mass = 1;
+scaleOut.fromValue = @(1.0);
+scaleOut.toValue = @(0.7);
+
+[alertView.layer addAnimation:scaleOut forKey:scaleOut.keyPath];
+alertView.transform = CGAffineTransformMakeScale(0.7, 0.7);
+```
+
+内置的iOS警告框会在淡出时缩小一点点，所以我们在这里也做同样的事情。比例值0.7只是我观察内置的警告框后得出的，并且看起来还不错。
+
+这里是完整的动画：
+
+
+----------
+![](http://img.blog.csdn.net/20160627154604942)
+
+
+----------
+
 
 ----------
 更多更新内容参见[我的博客](http://blog.csdn.net/column/details/cloudox-column3.html)  
