@@ -1103,7 +1103,7 @@ alertView.transform = CGAffineTransformMakeScale(0.7, 0.7);
 
 
 ----------
-![](http://img.blog.csdn.net/20160628092500206)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alertfrombottom.gif)
 
 
 ----------
@@ -1201,7 +1201,7 @@ alertView.transform = CGAffineTransformTranslate(alertView.transform, 0, 600);
 
 
 ----------
-![](http://img.blog.csdn.net/20160629095637043)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alert2fast.gif)
 
 
 ----------
@@ -1209,7 +1209,7 @@ alertView.transform = CGAffineTransformTranslate(alertView.transform, 0, 600);
 
 
 ----------
-![](http://img.blog.csdn.net/20160629095707699)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alertfrombottom.gif)
 
 
 ----------
