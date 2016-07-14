@@ -1050,7 +1050,166 @@ alertView.transform = CGAffineTransformMakeScale(1.0, 1.0);
 
 
 ----------
-![](http://img.blog.csdn.net/20160624093519283)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alert4.gif)
+
+
+----------
+
+很好，警告框已经准确地处于屏幕的中间，并且有我想要的动画。现在让我们开发消失的动画。
+
+就如我们起初显示警告框并且确保它不会出现的太快一样，当警告框消失时我们需要思考一下时间应该是什么样的。我不知道你怎么想，但当我关闭一个警告框时，我想要立即回到我之前被打断的内容里去，所以基于此，我总是喜欢以比显示它更快的速度来清楚它。没必要让动画两端的时间保持对称，如果对用户有意义的话，可以调整动画的时间。
+
+```objective-c
+// 淡出覆盖层和警告框
+[UIView animateWithDuration:.15 delay:0 options:UIViewAnimationOptionCurveEaseInOut
+    animations:^{
+    overlayView.alpha = 0.0f;
+    alertView.alpha = 0.0f;
+} completion:NULL];
+```
+
+因为我们在回转我们的初始动画，我们现在需要将覆盖层和警告框视图的不透明度退回到0。同样，因为我想要这两个同时动画，所以我将它们放到同一个基于block动画中。注意这个淡出动画的时间只有淡入动画的一般长。我们想要让警告框离开屏幕的时候显得很爽利，让持续时间变短则可以完成这一需求。
+
+接下来我们需要在其淡出到0不透明度的同时缩小警告框。
+
+```objective-c
+// 警告框的缩小动画
+JNWSpringAnimation *scaleOut = [JNWSpringAnimation
+    animationWithKeyPath:@"transform.scale"];
+scaleOut.damping = 11;
+scaleOut.stiffness = 11;
+scaleOut.mass = 1;
+scaleOut.fromValue = @(1.0);
+scaleOut.toValue = @(0.7);
+
+[alertView.layer addAnimation:scaleOut forKey:scaleOut.keyPath];
+alertView.transform = CGAffineTransformMakeScale(0.7, 0.7);
+```
+
+内置的iOS警告框会在淡出时缩小一点点，所以我们在这里也做同样的事情。比例值0.7只是我观察内置的警告框后得出的，并且看起来还不错。
+
+这里是完整的动画：
+
+
+----------
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alertfinal.gif)
+
+
+----------
+
+### 构建更有想象力的警告框视图
+
+现在我们基本重现了标准的iOS 7警告框视图，让我们娱乐一下，构建一些有不同类型动作的自定义的警告框视图。这里是一个警告框的例子，有着位置和比例的动画，并且其出现和消失的动画都是在屏幕的底部。
+
+
+----------
+![](http://img.blog.csdn.net/20160628092500206)
+
+
+----------
+为了完成这个动画，支撑警告框的`UIView`和我们之前的例子的设置基本一致，但这一次我们需要更新它的transform属性来进行translation和scale的更改。
+
+```objective-c
+alertView.transform = CGAffineTransformMakeScale(.25, .25);
+alertView.transform = CGAffineTransformTranslate(alertView.transform, 0, 600);
+```
+
+这会设置transform在X和Y方向上都变为0.25的比例，接着会对translation进行更变，将其放置到屏幕的底部。你也可以这样做来达到同样的效果。
+
+```objective-c
+CGAffineTransform viewTransform = CGAffineTransformConcat(
+    CGAffineTransformMakeScale(.25, .25), CGAffineTransformMakeTranslation(0, 600));
+alertView.transform = viewTransform;
+```
+
+现在`UIView`就已经被设为在动画开始前比例变小并且处于屏幕的底部了，我们可以开始下一步了。我们会将警告框的比例拉回1.0，并将其位置改回开始的位置，即屏幕的中央。我们依然会同时淡出覆盖层、淡入警告框。
+
+```objective-c
+// 同时处理覆盖层和警告框
+UIView animateWithDuration:.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut
+    animations:^{
+    overlayView.alpha = 0.2f;
+    alertView.alpha = 1.0f;
+} completion:NULL];
+
+// 将警告框的比例动画从0.25变为1.0
+JNWSpringAnimation *scale =
+    [JNWSpringAnimation animationWithKeyPath:@"transform.scale"];
+scale.damping = 12;
+scale.stiffness = 12;
+scale.mass = 1;
+scale.fromValue = @(.25);
+scale.toValue = @(1.0);
+
+[alertView.layer addAnimation:scale forKey:scale.keyPath];
+alertView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
+
+// 将Y方向的位置从600动画回0
+// 将其放回原来的位置
+JNWSpringAnimation *translate = [JNWSpringAnimation
+    animationWithKeyPath:@"transform.translation.y"];
+translate.damping = 15;
+translate.stiffness = 15;
+translate.mass = 1;
+translate.fromValue = @(600);
+translate.toValue = @(0);
+
+[alertView.layer addAnimation:translate forKey:translate.keyPath];
+alertView.transform = CGAffineTransformTranslate(alertView.transform, 0, 0);
+```
+
+如果你细心的话就会发现这两个动画的弹簧属性非常的相似。它们都有匹配damping的stiffness，意味着它是一种没有弹性的指数衰减类型的动作。然而scale动画的值比translation动画的值要低，意味着scale会慢一点点。这是因为我想要所有的动画大致在同时结束，因为translation动画比scale动画移动更多的值，所以它需要移动的快一点点来匹配scale动画的速度。这只会略微被注意到，但如果某个动画比另一个结束得早，绝对会看起来很奇怪。
+
+对于收回的动画，警告框会收缩并且跳回屏幕的底部。如其他例子一样，我想要警告框有一个比起显示到用户面前时更快的动作。
+
+```objective-c
+// 一起淡化覆盖层和警告框
+[UIView animateWithDuration:.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut
+    animations:^{
+    overlayView.alpha = 0.0f;
+    alertView.alpha = 0.0f;
+} completion:NULL];
+
+// 动画将警告框的比例从1.0变为0.5
+JNWSpringAnimation *scale =
+    [JNWSpringAnimation animationWithKeyPath:@"transform.scale"];
+scale.damping = 17;
+scale.stiffness = 17;
+scale.mass = 1;
+scale.fromValue = @(1.0);
+scale.toValue = @(0.5);
+
+[alertView.layer addAnimation:scale forKey:scale.keyPath];
+alertView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.5, 0.5);
+
+// 动画将位置从0变回屏幕底部
+JNWSpringAnimation *translate = [JNWSpringAnimation
+    animationWithKeyPath:@"transform.translation.y"];
+translate.damping = 4;
+translate.stiffness = 4;
+translate.mass = 1;
+translate.fromValue = @(0);
+translate.toValue = @(600);
+
+[alertView.layer addAnimation:translate forKey:translate.keyPath];
+alertView.transform = CGAffineTransformTranslate(alertView.transform, 0, 600);
+```
+
+警告框消失的动画速度和之前非常的不一样：translation动画比scale动画要慢很多。原因是当translation动画移动得scale动画慢时，你会在警告框落回屏幕底部前看到更多的scale动画。我认为这种方式是一个很好的视觉效果，因为我加强了警告框退出的效果。
+
+如果我们加快translation动画，使其damping和stiffness值和scale动画一样，这就是它看起来的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160629095637043)
+
+
+----------
+与慢一点的过渡相比较...
+
+
+----------
+![](http://img.blog.csdn.net/20160629095707699)
 
 
 ----------
