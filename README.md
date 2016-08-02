@@ -1218,7 +1218,7 @@ alertView.transform = CGAffineTransformTranslate(alertView.transform, 0, 600);
 
 
 ----------
-![](http://img.blog.csdn.net/20160630091451438)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alert3center.gif)
 
 
 ----------
