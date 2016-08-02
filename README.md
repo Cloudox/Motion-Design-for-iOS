@@ -1103,7 +1103,7 @@ alertView.transform = CGAffineTransformMakeScale(0.7, 0.7);
 
 
 ----------
-![](http://img.blog.csdn.net/20160628092500206)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alertfrombottom.gif)
 
 
 ----------
@@ -1201,7 +1201,7 @@ alertView.transform = CGAffineTransformTranslate(alertView.transform, 0, 600);
 
 
 ----------
-![](http://img.blog.csdn.net/20160629095637043)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alert2fast.gif)
 
 
 ----------
@@ -1209,10 +1209,44 @@ alertView.transform = CGAffineTransformTranslate(alertView.transform, 0, 600);
 
 
 ----------
-![](http://img.blog.csdn.net/20160629095707699)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alertfrombottom.gif)
 
 
 ----------
+
+现在让我们为我们的警告框视图创建一个不同类型的动作，从屏幕的中央出来并带有一些弹性动画来获取用户的注意。这就是它看起来的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160630091451438)
+
+
+----------
+这是一个更简单的动画，因为我们只动画了警告框transform的一个属性，即scale。我们设置它的初始scale为0来建立我们的警告框视图。
+
+```objective-c
+lofter 2016/6/30 9:15:45
+alertView.transform = CGAffineTransformMakeScale(0, 0);
+```
+
+和之前一样，我们想要给覆盖层和警告框一个淡化的动画，不过这一次我们会用弹性的出现来动画警告框的scale。
+
+```objective-c
+JNWSpringAnimation *scale = [JNWSpringAnimation
+    animationWithKeyPath:@"transform.scale"];
+scale.damping = 32;
+scale.stiffness = 450;
+scale.mass = 2.4;
+scale.fromValue = @(0);
+scale.toValue = @(1.0);
+
+[alertView.layer addAnimation:scale forKey:scale.keyPath];
+alertView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
+```
+
+这里的弹簧的damping、stiffness和mass属性和我们用来创建平稳衰减到最终值的动作的属性非常不同。这些值会一直使用JNWSpringAnimation Mac app直到它们有了正确地弹性，不太快也不太强力。
+
+觉得使用JNWSpringAnimation和自然的动作来构建动画界面和棒吗？非常好，是时候开始构建一些在第一节里显示的动画例子了。
 
 
 ----------
