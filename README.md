@@ -6,6 +6,7 @@
 * [SECTION 2](#SECTION 2)
 * [SECTION 3](#SECTION 3)
 * [SECTION 4](#SECTION 4)
+* [SECTION 5](#SECTION 5)
 
 ## <a name="SECTION 1"/>SECTION 1
 在2013年六月，苹果推出了iOS 7，并与iOS 6大相径庭，让设计师回归本初。曾经代表漂亮iOS设计的现实主义拟物化离去了，而一个更加平面、光滑，更加“计算机真实”的美学到来了。这种向平面设计专项的一个重大影响就是在Photoshop（或者任何可选的设计工具）中进行一个设计变得更简单、花费更少的时间、并且不再有差异。创建一个有着漂亮现实渐变色、阴影和高亮的app界面是一件很艰苦的事情。而创建一个根本没有渐变色和阴影并且主要由大块相同颜色组成的app界面明显更简单。
@@ -1218,7 +1219,7 @@ alertView.transform = CGAffineTransformTranslate(alertView.transform, 0, 600);
 
 
 ----------
-![](http://img.blog.csdn.net/20160630091451438)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%204/alert3center.gif)
 
 
 ----------
@@ -1247,6 +1248,96 @@ alertView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0
 这里的弹簧的damping、stiffness和mass属性和我们用来创建平稳衰减到最终值的动作的属性非常不同。这些值会一直使用JNWSpringAnimation Mac app直到它们有了正确地弹性，不太快也不太强力。
 
 觉得使用JNWSpringAnimation和自然的动作来构建动画界面和棒吗？非常好，是时候开始构建一些在第一节里显示的动画例子了。
+
+
+## <a name="SECTION 5"/>SECTION 5
+### 创建Jeff Broderick的地图动画
+在本指南的前面，我提到了一些Jeff Broderick设计并发布到Dribbble的很棒的动画。
+
+
+----------
+![](http://img.blog.csdn.net/20160704095116742)
+
+
+----------
+如我所说，这里有一些不懂得动画。首先，当地图的图标被点击时，应用的主界面（包括导航栏）同时有不透明度和比例的动画来让其淡出到黑色的背景中并且有一点点缩小。同时，地图伴随着不透明度和比例的动画显著地显现到界面的前面来。地图还会向屏幕上方移动一点，就像过度动画一样。地图图标会保持在原位。
+
+在我们编码重现Jeff的动画前，先看一眼我们创建的最终的动画效果。
+
+
+----------
+![](http://img.blog.csdn.net/20160704101254642)
+
+
+----------
+我们通过一些简单的`UIImageView`和`UIButton`来重新开发这个动画，因为它们可以准确地得到动画的感觉，但在真实的地图中这会是一个真实的可伸缩的地图视图。
+
+首先，让我们添加代表app主界面的图片。
+
+```objective-c
+// 添加app的主背景图片
+self.appBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0, 20,
+    self.window.bounds.size.width, 548)];
+self.appBackground.image = [UIImage imageNamed:@"app-bg"];
+[self.window addSubview:self.appBackground];
+```
+
+我们添加了一个图片属性为“app-bg@2x.png”的简单的`UIImageView`。app的运行时很聪明，你只用写“app-bg”它就会在app包的图片资源中找到“app-bg@2x.png”。这个视图被添加为类的@property了，这样我们就可以在之后的代码中引用它。这里显示了如何声明一个@porperty。
+
+```objective-c
+@property (assign) UIImageView *appBackground;
+```
+
+这个@property既可以定义在类的.h文件的@interface中，也可以定义在.m实现文件的@interface块中来让其私有。在苹果的开发者网站的Objective-C指南中可以阅读更多关于程序的属性的内容。
+
+最后，我们将`UIImageView`作为主屏幕的一个子视图添加进去。这是一个快速的模型，否则我会创建另一个`UIViewController`的子类来装载我们的UI代码。
+
+如果我构建并运行，这就是app目前看起来的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160706110817271)
+
+
+----------
+非常棒！现在让我们添加地图，它会是透明的，并且会伴随着变化开始。我们会在主应用图片后立即添加它，因为我们想要最后添加图标按钮，这样它就会使z轴上最高的，也就是在其他视图的顶部。
+
+```objective-c
+// 添加地图视图
+self.mapView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 62,
+    self.window.bounds.size.width, 458)];
+self.mapView.image = [UIImage imageNamed:@"map-arrow"];
+self.mapView.alpha = 0.0f;
+self.mapView.transform = CGAffineTransformMakeTranslation(0, 30);
+self.mapView.transform = CGAffineTransformScale(self.mapView.transform, 1.1, 1.1);
+[self.window addSubview:self.mapView];
+```
+
+想在Swift下开发这些例子么？这里就是Swift下的上面Objective-C的代码。
+
+```swift
+self.mapView =
+    UIImageView(frame: CGRectMake(0, 62, self.window!.bounds.size.width, 458))
+self.mapView!.image = UIImage(named: "map-arrow")
+self.mapView!.alpha = 0.0
+self.mapView!.transform = CGAffineTransformMakeTranslation(0, 30)
+self.mapView!.transform = CGAffineTransformScale(self.mapView!.transform, 1.1, 1.1)
+self.window!.addSubview(self.mapView!)
+```
+
+地图视图的frame开始会在左上角，但会距离顶部62像素，这样就会正好位于我们要添加的地图按钮的下方一点点。图片属性被设为“map-arrow”，这只是一个地图图片，我将其和一个箭头放在一起，来模仿Jeff在他的动画中所涉及的样子。
+
+一开始，这个视图会是完全透明的，所以alpha属性被设为0。有两个变换添加到视图中：第一个将视图往下移动30像素，第二个将其从正常尺寸拉伸到1.1倍。
+
+这里是它现在看起来的样子，我注视了alpha那一行，这样我们就可以看到地图在哪。
+
+
+----------
+![](http://img.blog.csdn.net/20160706111711514)
+
+
+----------
+这看起来是动画开始的准确位置了。
 
 
 ----------
