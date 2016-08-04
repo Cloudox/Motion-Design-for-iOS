@@ -1256,7 +1256,7 @@ alertView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0
 
 
 ----------
-![](http://img.blog.csdn.net/20160704095116742)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/map.gif)
 
 
 ----------
@@ -1266,7 +1266,7 @@ alertView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0
 
 
 ----------
-![](http://img.blog.csdn.net/20160704101254642)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/map2.gif)
 
 
 ----------
@@ -1296,7 +1296,7 @@ self.appBackground.image = [UIImage imageNamed:@"app-bg"];
 
 
 ----------
-![](http://img.blog.csdn.net/20160706110817271)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/map1.png)
 
 
 ----------
@@ -1333,7 +1333,7 @@ self.window!.addSubview(self.mapView!)
 
 
 ----------
-![](http://img.blog.csdn.net/20160706111711514)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/map2.png)
 
 
 ----------
