@@ -1256,7 +1256,7 @@ alertView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0
 
 
 ----------
-![](http://img.blog.csdn.net/20160704095116742)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/map.gif)
 
 
 ----------
@@ -1266,7 +1266,7 @@ alertView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0
 
 
 ----------
-![](http://img.blog.csdn.net/20160704101254642)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/map2.gif)
 
 
 ----------
@@ -1296,7 +1296,7 @@ self.appBackground.image = [UIImage imageNamed:@"app-bg"];
 
 
 ----------
-![](http://img.blog.csdn.net/20160706110817271)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/map1.png)
 
 
 ----------
@@ -1333,11 +1333,100 @@ self.window!.addSubview(self.mapView!)
 
 
 ----------
-![](http://img.blog.csdn.net/20160706111711514)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/map2.png)
 
 
 ----------
 这看起来是动画开始的准确位置了。
+
+现在让我们添加我们的图标按钮。
+
+```objective-c
+// 添加图标
+UIButton *icon = [UIButton buttonWithType:UIButtonTypeCustom];
+[icon setImage:[UIImage imageNamed:@"map-icon"] forState:UIControlStateNormal];
+[icon addTarget:self action:@selector(didTapMapIcon:)
+    forControlEvents:UIControlEventTouchUpInside];
+[icon setFrame:CGRectMake(self.window.bounds.size.width - 49, 19, 49, 44)];
+[self.window addSubview:icon];
+```
+
+这是一个非常典型的添加图标按钮的方式。`UIButton`类有一个便利的方式来构建一个按钮：+buttonWithType:类方法。我将按钮类型设为`UIButtonTypeCustom`，意味着没有默认的风格会被设置，完全取决于我。这是一种实用的简单图标按钮，没有边界和其他怪异的风格需要移除。有点类似于CSS中对按钮进行重置。
+
+接下来我设置按钮的图片为我app包中的“map-icon”图片。参数`UIControlStateNormal`意味着这个图标会在常规、默认状态下为显示按钮的图片。你可以用多种图片多次设置这个值，只要你想要改变图标，比如`UIControlStateHighlighted`状态。默认情况下，当一个`UIButton`被点击时，iOS会自动暗化图片。
+
+最后，我让按钮可被点击并且会调用我定义的一个方法。`self`参数值意味着我想要这个按钮调用其被点击时所在的类，而`@selector(didTapMapIcon:)`是我想要调用的Objective-C方法。接下来我通过设置frame将按钮放置在准确的位置。
+
+让我们看看现在app的样子，地图的alpha值被设为了0，所以它是不可见的。
+
+
+----------
+![](http://img.blog.csdn.net/20160707100650842)
+
+
+----------
+好，现在我们将动画的所有主要部件都添加到界面上了，是时候在地图图标被点击时添加一些动画了。
+
+首先，我们需要实现按钮被点击时被调用的方法。这里是不含任何内容的方法看起来的样子。
+
+```objective-c
+- (void)didTapMapIcon:(id)sender {
+    // 暂时没有任何内容!
+}
+```
+
+它会在用户点击地图按钮时被调用，因为我们之前通过 -addTarget:action:forControlEvents:方法进行了设置。
+
+所以，按照逻辑，当你点击按钮时，下面两种事件之一会发生：将地图动画到界面上，或者如果地图已经可见了，则将地图动画出界面。我们可以检查我们的界面元素并查看它们的位置来决定我们应该做什么，但那太麻烦了，所以让我们通过一个简单的作为类@property的 BOOL 变量来跟踪状态。在这个文件的顶部我添加了一个名为mapShowing的BOOL变量来管理我们是需要打开还是关闭地图视图。这个属性会放置在我们按钮方法的下面，而我们添加的其他属性是我们界面的主视图。
+
+```objective-c
+@interface DTCAppDelegate ()
+
+- (void)didTapMapIcon:(id)sender;
+
+@property (assign) BOOL mapShowing;
+
+@property (strong) UIImageView *appBackground;
+@property (strong) UIImageView *mapView;
+
+@end
+```
+
+现在，回到我们的按钮点击方法，我们需要在这里添加一些逻辑，来检查地图是显示还是不显示，然后将变量设为相反的。
+
+```objective-c
+- (void)didTapMapIcon:(id)sender {
+	
+if (self.mapShowing) {	
+    self.mapShowing = NO;
+
+    // 当地图已经可见时要运行的代码
+} else {
+    self.mapShowing = YES;
+
+    // 当地图不可见时要运行的代码
+}
+```
+
+让我们从`else`的情况开始，此时地图未显示，我们需要进行不透明度的动画。我们需要做的是淡出主app背景一点点然后淡入地图。主app背景的淡出速度会比地图的淡入速度慢一点点，这样地图会更显眼。
+
+```objective-c
+[UIView animateWithDuration:.5 delay:0 
+    options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState 
+    animations:^{
+    self.appBackground.alpha = 0.3f;
+} completion:NULL];
+		
+[UIView animateWithDuration:.15 delay:0
+    options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState 
+    animations:^{
+	self.mapView.alpha = 1.0f;
+} completion:NULL];
+```
+
+你可能注意到了放置在这个基于block的`UIView`动画方法总的options依据里的巨大的参数。这实际上是两个选项通过二进制 | 操作组合在一起的：`UIViewAnimationOptionCurveEaseInOut`用来定义动画的淡入淡出，`UIViewAnimationOptionBeginFromCurrentState `会从其alpha的当前值开始动画，这样即使动画被打断了，它也不会跳回开始动画前的初始值。这对像这样被用户动作管理的动画非常重要，因为你不知道用户会不会在动画发生后不停点击按钮，而且你肯定不想在动画完成后都没做任何事。
+
+当然，调整主app界面和地图的不透明度并没有准确地完成我们的动画，因为我们还需要动画地图的比例和位置，这样它才能够到达它最终的位置和尺寸。对于主app界面，我们只会稍微动画其比例。
 
 
 ----------
