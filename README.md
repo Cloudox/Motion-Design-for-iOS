@@ -1496,7 +1496,7 @@ self.mapView.transform = CGAffineTransformTranslate(self.mapView.transform, 0, 0
 
 
 ----------
-![](http://img.blog.csdn.net/20160708092907721)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/map3.gif)
 
 
 ----------
@@ -1578,7 +1578,7 @@ if (self.mapShowing) {
 
 
 ----------
-![](http://img.blog.csdn.net/20160708094842394)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/map4.gif)
 
 
 ----------
