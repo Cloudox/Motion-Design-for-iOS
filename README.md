@@ -1361,7 +1361,7 @@ UIButton *icon = [UIButton buttonWithType:UIButtonTypeCustom];
 
 
 ----------
-![](http://img.blog.csdn.net/20160707100650842)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/map3.png)
 
 
 ----------
@@ -1427,6 +1427,162 @@ if (self.mapShowing) {
 你可能注意到了放置在这个基于block的`UIView`动画方法总的options依据里的巨大的参数。这实际上是两个选项通过二进制 | 操作组合在一起的：`UIViewAnimationOptionCurveEaseInOut`用来定义动画的淡入淡出，`UIViewAnimationOptionBeginFromCurrentState `会从其alpha的当前值开始动画，这样即使动画被打断了，它也不会跳回开始动画前的初始值。这对像这样被用户动作管理的动画非常重要，因为你不知道用户会不会在动画发生后不停点击按钮，而且你肯定不想在动画完成后都没做任何事。
 
 当然，调整主app界面和地图的不透明度并没有准确地完成我们的动画，因为我们还需要动画地图的比例和位置，这样它才能够到达它最终的位置和尺寸。对于主app界面，我们只会稍微动画其比例。
+
+即使这些动画可以通过一个淡出动画曲线来完成，我也想使用含有相同damping和stiffness值得弹簧动画，这样我就可以减缓速度。这里不会有弹性，只是非常平滑的过渡。
+
+```objective-c
+CGFloat dampingStiffness = 16.0f;
+
+// 主app背景的比例动画
+JNWSpringAnimation *scale =
+    [JNWSpringAnimation animationWithKeyPath:@"transform.scale"];
+scale.damping = dampingStiffness;
+scale.stiffness = dampingStiffness;
+scale.mass = 1;
+scale.fromValue = @([[self.appBackground.layer.presentationLayer
+    valueForKeyPath:scale.keyPath] floatValue]);
+scale.toValue = @(0.9);
+
+[self.appBackground.layer addAnimation:scale forKey:scale.keyPath];
+self.appBackground.transform =
+    CGAffineTransformScale(CGAffineTransformIdentity, .9, .9);
+
+```
+
+我将damping和stiffness值设为一个`CGFloat`变量，这样我就可以更简单地调整它们而不用一次更新两个值。
+
+这个block代码中的一个主要的与其他例子不同的改变是比例动画的fromValue没有被设为一个常量，而是设为[[self.appBackground.layer.presentationLayer valueForKeyPath:scale.keyPath] floatValue]。这是什么意思呢？如果你一块块拆开，这些事要发生的事：
+
+* 我会使用self.appBackground来访问这个类的appBackground属性
+* 我会获取到这个视图的`CALayer`对象
+* 我在layer上获取presentationLayer属性，通过它来获取特殊的presentation model layer，让我们看到动画改变时的值
+* 当我有了presentationLayer后，我会调用 -valueForKeyPath: 来取得变换的比例部分的当前值。（scale.keyPath = @"transform.scale"）
+* 当我最后有了当前的比例值后，它不是JNWSpringAnimation需要的数据格式，所以我使用了floatValue。
+
+记得之前我提到过在动画中layer上的很多属性值都不会改变么？以及presentation model layer是Core Animation用来存储动画发生过程中精确的变更值的？我们需要获取比例变换的当前值，这样就可以在当前任何点开始动画（记住如果用户很开心地不停点击，我们不想要动画重新开始！）。我们需要获取特殊的显示层来查看值。然后我们使用它作为我们动画的fromValue，这样他就能始终正常工作，无论fromValue是我们为视图设置的正常的、未触摸的比例值，还是动画中的某个值。如果我们不通过presentationLayer获取它，这个值在动画中就始终不会正确，直到动画结束。
+
+我们不仅仅需要动画主app背景，还需要动画地图，将比例降回1.0,，并且通过过渡移动到屏幕上。让我们现在做。
+
+```objective-c
+// 地图有两个分开的动画，一个用于位置，一个用于比例
+JNWSpringAnimation *mapScale =
+    [JNWSpringAnimation animationWithKeyPath:@"transform.scale"];
+mapScale.damping = dampingStiffness;
+mapScale.stiffness = dampingStiffness;
+mapScale.mass = 1;
+mapScale.fromValue =
+    @([[self.mapView.layer.presentationLayer valueForKeyPath:mapScale.keyPath] floatValue]);
+mapScale.toValue = @(1.0);
+
+[self.mapView.layer addAnimation:mapScale forKey:mapScale.keyPath];
+self.mapView.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1, 1);
+
+JNWSpringAnimation *mapTranslate =
+    [JNWSpringAnimation animationWithKeyPath:@"transform.translation.y"];
+mapTranslate.damping = dampingStiffness;
+mapTranslate.stiffness = dampingStiffness;
+mapTranslate.mass = 1;
+mapTranslate.fromValue =
+    @([[self.mapView.layer.presentationLayer valueForKeyPath:mapTranslate.keyPath] floatValue]);
+mapTranslate.toValue = @(0);
+
+[self.mapView.layer addAnimation:mapTranslate forKey:mapTranslate.keyPath];
+self.mapView.transform = CGAffineTransformTranslate(self.mapView.transform, 0, 0);
+```
+
+这里没有什么很复杂的，除了获取当前变化的值来从其开始，如前面的动画一样。我在这也使用了damping和stiffness变量，这样所有的动画都感觉是同一个类型的动作。
+
+锁着这是一块正统的代码，好在其非常简单，而且现在你应该习惯了JNWSpringAnimation代码块的样子。这是目前动画看起来的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160708092907721)
+
+
+----------
+
+现在是时候添加这个界面的其他动画了，即当用户点击地图图标且地图可见时，我们想要将其淡出并且将主app背景放回到前面。因为它和我们刚才展示的动画除了开始和结束值外完全一样，这里就直接放一个大块来解释发生了什么。
+
+```objective-c
+if (self.mapShowing) {
+		
+    self.mapShowing = NO;
+
+    // 再次使用这些动画相同的damping和stiffness
+    // 这样我们就可以获取CGFloat形式的值。注意这个值会高一点
+    // 意味着动画会花费更少的时间（在匹配此damping和stiffness的弹簧动画下）。
+    // 少时间是好的，因为我们要回到界面的默认状态，而此时用户只想让地图赶紧消失。
+    CGFloat dampingStiffnessOut = 24.0f;
+
+    // 再说一次，从当前状态开始很重要，这样用户点击按钮时就不会抽动
+    [UIView animateWithDuration:.5 delay:0 
+        options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState
+        animations:^{
+    	self.appBackground.alpha = 1.0f;
+    } completion:NULL];
+
+    [UIView animateWithDuration:.3 delay:0
+        options:UIViewAnimationOptionCurveEaseInOut|UIViewAnimationOptionBeginFromCurrentState 
+        animations:^{
+    	self.mapView.alpha = 0.0f;
+    } completion:NULL];
+
+    // 地图有两个分开的动画，一个是位置一个是比例。
+    // 我们通过presentationLayer获取@“transform.scale”的变化的值，如之前的例子一样
+    JNWSpringAnimation *mapScale =
+        [JNWSpringAnimationanimationWithKeyPath:@"transform.scale"];
+    mapScale.damping = dampingStiffnessOut;
+    mapScale.stiffness = dampingStiffnessOut;
+    mapScale.mass = 1;
+    mapScale.fromValue =
+        @([[self.mapView.layer.presentationLayer
+        valueForKeyPath:mapScale.keyPath] floatValue]);
+    mapScale.toValue = @(1.1);
+
+    [self.mapView.layer addAnimation:mapScale forKey:mapScale.keyPath];
+    self.mapView.transform =
+        CGAffineTransformScale(CGAffineTransformIdentity, 1.1, 1.1);
+
+    JNWSpringAnimation *mapTranslate =
+        [JNWSpringAnimation animationWithKeyPath:@"transform.translation.y"];
+    mapTranslate.damping = dampingStiffnessOut;
+    mapTranslate.stiffness = dampingStiffnessOut;
+    mapTranslate.mass = 1;
+    mapTranslate.fromValue =
+        @([[self.mapView.layer.presentationLayer
+        valueForKeyPath:mapTranslate.keyPath] floatValue]);
+    mapTranslate.toValue = @(30);
+
+    [self.mapView.layer addAnimation:mapTranslate forKey:mapTranslate.keyPath];
+    self.mapView.transform = CGAffineTransformTranslate(self.mapView.transform, 0, 30);
+
+    // 主app背景的比例动画。我们将其动画回1.0倍
+    JNWSpringAnimation *scale =
+        [JNWSpringAnimation animationWithKeyPath:@"transform.scale"];
+    scale.damping = dampingStiffnessOut;
+    scale.stiffness = dampingStiffnessOut;
+    scale.mass = 1;
+    scale.fromValue =
+        @([[self.appBackground.layer.presentationLayer
+        valueForKeyPath:@"transform.scale.x"] floatValue]);
+    scale.toValue = @(1.0);
+
+    [self.appBackground.layer addAnimation:scale forKey:scale.keyPath];
+    self.appBackground.transform =
+        CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
+
+}
+```
+
+这里是完整的、最终的动画的样子。如果你想一个疯子一样点击，会发现它确实是从当前值开始动画的，而且不会抽动。
+
+
+----------
+![](http://img.blog.csdn.net/20160708094842394)
+
+
+----------
+这很有意思！现在让我们去转眼有些断断续续的动画。
 
 
 ----------
