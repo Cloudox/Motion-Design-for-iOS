@@ -1589,7 +1589,7 @@ Jakub是斯洛伐克的一名出色的设计师，已经设计了一些经常发
 
 
 ----------
-![](http://img.blog.csdn.net/20160712094537113)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/music.gif)
 
 
 ----------
@@ -1603,7 +1603,7 @@ Jakub是斯洛伐克的一名出色的设计师，已经设计了一些经常发
 
 
 ----------
-![](http://img.blog.csdn.net/20160712100341526)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicplayer.png)
 
 
 ----------
