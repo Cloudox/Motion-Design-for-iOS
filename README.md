@@ -1608,6 +1608,73 @@ Jakub是斯洛伐克的一名出色的设计师，已经设计了一些经常发
 
 ----------
 
+如果你仔细观察原始的动画，会发现有8个分开动画的不同元素。
+
+1. 黑色箭头和“Dance Club”文本
+2. “Ministry of Fun”文本
+3. “Add a Song”按钮
+4. 五首歌对应的五行
+
+这8个元素（或元素组，因为箭头和“Dance Club”文本是一起动画的）是通过不同的开始时间递进进入视图的，这就是我们要在动画中获取的非常酷的波浪感效果。
+
+首先我们整理一下计划。我需要做的是分开添加这些元素到界面上，这样我就可以分开动画它们了。如果这是一个真实的app，有着真实流入的数据，这个界面最可能是一个`UITableView`或者`UICollectionView`来获取一个好的、结构化的展示行的方式。从高层面来概括这两个视图类型的话，就是你实现你需要定义的它们的接口方法，来返回一些数据到界面上，比如返回行高的方法，或者返回一个只有一行的视图的方法。因为我们没有数据，而且我的主要目的是演示如何构建动画，我就仅仅是保存一些Photoshop里设计的图片并手动将这些图片添加到界面上去，从顶部的箭头和“Dance Club”文本开始。
+
+```objective-c
+// 定义一个变量来获取屏幕的宽度，我们会经常用到这个值。
+CGFloat windowWidth = self.window.bounds.size.width;
+
+// 将背景添加到界面上
+UIImageView *backgroundView = [[UIImageView alloc] initWithFrame:self.window.bounds];
+backgroundView.image = [UIImage imageNamed:@"background"];
+[self.window addSubview:backgroundView];
+
+// 添加箭头和文本
+UIImageView *arrowView =
+    [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, windowWidth, 45)];
+arrowView.image = [UIImage imageNamed:@"arrow"];
+[self.window addSubview:arrowView];
+```
+
+这里没什么特别的，只是简单地添加一些视图到我们原型的主屏幕上。名为@“background”的图片是大的渐变的图片，作为其他视图的背景。@“arrow”图片是用Photoshop做出来的包含箭头和“Dance Club”文本的图片，因为我会同时动画它们，所以将它们简单地放在一个图片里。
+
+这里是目前界面看起来的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160714152352247)
+
+
+----------
+现在让我们添加更多的视图！
+
+```objective-c
+// “Ministry of Fun”图片
+UIImageView *ministryView =
+    [[UIImageView alloc] initWithFrame:CGRectMake(0, 57, windowWidth, 28)];
+ministryView.image = [UIImage imageNamed:@"ministry"];
+[self.window addSubview:ministryView];
+
+// 添加一个歌曲按钮
+UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
+[addButton setImage:[UIImage imageNamed:@"add-button"] forState:UIControlStateNormal];
+[addButton setImage:[UIImage imageNamed:@"add-button-pressed"]
+    forState:UIControlStateHighlighted];
+[addButton setFrame:CGRectMake(0, 102, windowWidth, 45)];
+[self.window addSubview:addButton];
+```
+
+我添加“Ministry of Fun”图片视图（使用我用Photoshop分割出来的PNG图片）到界面上然后为“Add a Song”按钮创建一个`UIButton`。我本可以懒一点，不将按钮做成一个真的`UIButton`，而是使用一个`UIImageView`，但我想演示如何为一个自定义的`UIButton`设置点击的和普通的图片。只需要调用同样的一个 -setImage:forState:方法，但给它传输不同的属性。你可以随便调用它来设置不同的状态属性，来覆盖用户对按钮的每一个可能的操作。接着我设置按钮的位置并将它添加到界面上。
+
+这里是目前状态的界面，以及点击按钮时不同状态的演示。
+
+
+----------
+![](http://img.blog.csdn.net/20160714155039956)
+
+
+----------
+我们`UIControlStateHighlighted`状态的图片只是将白色边框换成了白色的填充。
+
 
 ----------
 更多更新内容参见[我的博客](http://blog.csdn.net/column/details/cloudox-column3.html)  
