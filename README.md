@@ -1641,7 +1641,7 @@ arrowView.image = [UIImage imageNamed:@"arrow"];
 
 
 ----------
-![](http://img.blog.csdn.net/20160714152352247)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/music1.png)
 
 
 ----------
@@ -1669,7 +1669,7 @@ UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
 
 
 ----------
-![](http://img.blog.csdn.net/20160714155039956)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicbutton.gif)
 
 
 ----------
