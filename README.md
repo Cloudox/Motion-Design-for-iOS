@@ -1715,7 +1715,7 @@ fifthRow.image = [UIImage imageNamed:@"5th-row"];
 
 
 ----------
-![](http://img.blog.csdn.net/20160801144819602)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/music2.png)
 
 
 ----------
@@ -1795,7 +1795,7 @@ fifthRow.image = [UIImage imageNamed:@"5th-row"];
 
 
 ----------
-![](http://img.blog.csdn.net/20160801150843901)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicbutton2.gif)
 
 
 ----------
@@ -1805,7 +1805,7 @@ fifthRow.image = [UIImage imageNamed:@"5th-row"];
 
 
 ----------
-![](http://img.blog.csdn.net/20160801151535513)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicbutton3.gif)
 
 
 ----------
@@ -1813,7 +1813,7 @@ fifthRow.image = [UIImage imageNamed:@"5th-row"];
 
 
 ----------
-![](http://img.blog.csdn.net/20160801152104517)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicbutton3.gif)
 
 
 ----------
