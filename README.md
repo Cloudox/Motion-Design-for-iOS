@@ -1641,7 +1641,7 @@ arrowView.image = [UIImage imageNamed:@"arrow"];
 
 
 ----------
-![](http://img.blog.csdn.net/20160714152352247)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/music1.png)
 
 
 ----------
@@ -1669,11 +1669,155 @@ UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
 
 
 ----------
-![](http://img.blog.csdn.net/20160714155039956)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicbutton.gif)
 
 
 ----------
 我们`UIControlStateHighlighted`状态的图片只是将白色边框换成了白色的填充。
+
+现在让我们添加我们的行。它们也都是`UIImageView`，所以也只用直接在背景图片上放置就可以了。
+
+```objective-c
+// Katy Perry 行
+UIImageView *firstRow =
+    [[UIImageView alloc] initWithFrame:CGRectMake(0, 170, windowWidth, 80)];
+firstRow.image = [UIImage imageNamed:@"1st-row"];
+[self.window addSubview:firstRow];
+
+// Shakira 行
+UIImageView *secondRow =
+    [[UIImageView alloc] initWithFrame:CGRectMake(0, 170+80, windowWidth, 80)];
+secondRow.image = [UIImage imageNamed:@"2nd-row"];
+[self.window addSubview:secondRow];
+
+// Pitbull 行
+UIImageView *thirdRow =
+    [[UIImageView alloc] initWithFrame:CGRectMake(0, 170+160, windowWidth, 80)];
+thirdRow.image = [UIImage imageNamed:@"3rd-row"];
+[self.window addSubview:thirdRow];
+
+// Lana del Rey 行
+UIImageView *fourthRow =
+    [[UIImageView alloc] initWithFrame:CGRectMake(0, 170+240, windowWidth, 80)];
+fourthRow.image = [UIImage imageNamed:@"4th-row"];
+[self.window addSubview:fourthRow];
+
+// HEX 行
+UIImageView *fifthRow =
+    [[UIImageView alloc] initWithFrame:CGRectMake(0, 170+320, windowWidth, 80)];
+fifthRow.image = [UIImage imageNamed:@"5th-row"];
+[self.window addSubview:fifthRow];
+```
+
+你可能注意到每一行frame的Y坐标（垂直位置）都有一个小方程式。每一行都是80px高，所以放置它们每一行的时候我都在Y坐标上加了80。我也可以使用Auto Layout来做，但对这个例子来说就有点过于复杂了。
+
+这里是在添加动画前的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160801144819602)
+
+
+----------
+但等一下，我们并不想要在第一次进入的看到这样的界面。这次练习的目的在于让每个元素都动画到它们的位置上，也就是说它们不应该立即出现在它们的最终位置。我要做的是从屏幕的右边开始每一个元素，然后我会让每个元素的左边动画到屏幕的左边，来到最终的位置。
+
+让我们回到我们的视图设置代码并修改每个元素的frame，这样它们的X轴坐标就不再是0了，而是屏幕的宽度。这样就会让每个元素的左边界并齐屏幕的右边界，用户就看不到了。
+
+```objective-c
+// 添加箭头和顶部的文字
+UIImageView *arrowView =
+   [[UIImageView alloc] initWithFrame:CGRectMake(windowWidth, 0, windowWidth, 45)];
+arrowView.image = [UIImage imageNamed:@"arrow"];
+[self.window addSubview:arrowView];
+
+// Ministry of Fun 文字
+UIImageView *ministryView =
+    [[UIImageView alloc] initWithFrame:CGRectMake(windowWidth, 57, windowWidth, 56/2)];
+ministryView.image = [UIImage imageNamed:@"ministry"];
+[self.window addSubview:ministryView];
+
+// Add a Song 按钮
+UIButton *addButton = [UIButton buttonWithType:UIButtonTypeCustom];
+[addButton setImage:[UIImage imageNamed:@"add-button"]
+    forState:UIControlStateNormal];
+[addButton setImage:[UIImage imageNamed:@"add-button-pressed"]
+    forState:UIControlStateHighlighted];
+[addButton setFrame:CGRectMake(windowWidth, 102, windowWidth, 45)];
+[self.window addSubview:addButton];
+
+// Katy Perry 行
+UIImageView *firstRow =
+    [[UIImageView alloc] initWithFrame:CGRectMake(windowWidth, 170, windowWidth, 80)];
+firstRow.image = [UIImage imageNamed:@"1st-row"];
+[self.window addSubview:firstRow];
+
+// Shakira 行
+UIImageView *secondRow =
+    [[UIImageView alloc] initWithFrame:CGRectMake(windowWidth, 170+80, windowWidth, 80)];
+secondRow.image = [UIImage imageNamed:@"2nd-row"];
+[self.window addSubview:secondRow];
+
+// Pitbull 行
+UIImageView *thirdRow =
+    [[UIImageView alloc] initWithFrame:CGRectMake(windowWidth, 170+160, windowWidth, 80)];
+thirdRow.image = [UIImage imageNamed:@"3rd-row"];
+[self.window addSubview:thirdRow];
+
+// Lana del Rey 行
+UIImageView *fourthRow =
+    [[UIImageView alloc] initWithFrame:CGRectMake(windowWidth, 170+240, windowWidth, 80)];
+fourthRow.image = [UIImage imageNamed:@"4th-row"];
+[self.window addSubview:fourthRow];
+
+// HEX 行
+UIImageView *fifthRow =
+    [[UIImageView alloc] initWithFrame:CGRectMake(windowWidth, 170+320, windowWidth, 80)];
+fifthRow.image = [UIImage imageNamed:@"5th-row"];
+[self.window addSubview:fifthRow];
+```
+
+你可以想象一下现在所有元素都移动到屏幕的右边去的界面样式，现在只显示了背景图片。
+
+现在所有内容都在屏幕外并且准备好动画了，策略是让每个元素都动画到左边，一次一个，每个都有所延迟，这样就会产生一种波浪的感觉。为了好玩，我们试试使用基于block的`UIView`动画方法来让我们的元素动画到屏幕上。
+
+这里是第一个动画block，我们会将箭头和“Dance Club”图片滑动到左边。
+
+```objective-c
+[UIView animateWithDuration:1.1 delay:0 usingSpringWithDamping:0.3
+    initialSpringVelocity:0 options:0 animations:^{
+    [arrowView setFrame:CGRectMake(0, 0, windowWidth, 45)];
+} completion:NULL];
+```
+
+这个基于block的动画有1.1秒的持续时间和0.3的弹簧阻尼。持续时间是动画完成需要的时间，而阻尼是iOS 7在`UIView`动画方法中提供的一个弹簧属性，用来控制弹簧的弹力。JNWSpringAnimation提供了三个属性来控制弹簧的物理性质，但Apple值提供了一个，即damping属性。damping需要时一个0到1之间的值，越接近0，弹簧动作就越有弹性，越接近1，就越没有弹性，直到完全没有弹性，变成一个平滑的淡入。
+
+让我们看看这个duration和damping值产生的动作。
+
+
+----------
+![](http://img.blog.csdn.net/20160801150843901)
+
+
+----------
+恩，有点不太对。动画太快也太跳跃了。这种类型的弹性动画带来了一些焦虑。这是一个关于仅仅使用一个弹簧动画并不能提升你的app整体用户体验的很好的例子。每种类型的动画都给你的用户带来了一些感受，而这个带来了错误地感受。
+
+让我们将持续时间提升到2.1秒并看看感觉。
+
+
+----------
+![](http://img.blog.csdn.net/20160801151535513)
+
+
+----------
+比起Jakub的原始动画，这个又太弹了，我们的damping值也需要调整。让我们将damping从0.3提升到0.6，如我之前所说，它更靠近1这个不弹的值。我们还是需要一点弹性，现在让我们来看看它怎么样了。
+
+
+----------
+![](http://img.blog.csdn.net/20160801152104517)
+
+
+----------
+好了，不是太坏。你可以发现当你使用iOS 7提供的弹簧动画方法时，它直接提供了一些值来获取你想要的感觉。NSWSpringAnimation给出的弹簧属性更容易理解，至少对我来说是这样，因为它们都操作了弹簧动作方程的不同属性。iOS 7的基于block的动画中的damping值实际上是一个解释值，这意味着苹果无论获取到你输入的什么值，都会做一些复杂的计算来操作这个值并将其放入弹簧动作方程式中。你可以说苹果操作了这个值，因为它在0和1之间改变弹性。而在实际的弹簧动作方程中，动作的时间（它到达平衡点或者最终位置的时间）是由弹簧的其他属性决定的，它不是你去设置然后强制弹簧遵循的。苹果的动画方法有一个你需要设置的持续时间，所以你在以一种并非完全遵循物理法则管理下的弹簧动作。这就是为什么我倾向于用JSWSpringAniamtion（或者Facebook Pop，我会马上提及），因为它们有着更加自然、逼真的弹簧动画。
 
 
 ----------
