@@ -1715,7 +1715,7 @@ fifthRow.image = [UIImage imageNamed:@"5th-row"];
 
 
 ----------
-![](http://img.blog.csdn.net/20160801144819602)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/music2.png)
 
 
 ----------
@@ -1795,7 +1795,7 @@ fifthRow.image = [UIImage imageNamed:@"5th-row"];
 
 
 ----------
-![](http://img.blog.csdn.net/20160801150843901)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicbutton2.gif)
 
 
 ----------
@@ -1805,7 +1805,7 @@ fifthRow.image = [UIImage imageNamed:@"5th-row"];
 
 
 ----------
-![](http://img.blog.csdn.net/20160801151535513)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicbutton3.gif)
 
 
 ----------
@@ -1813,11 +1813,115 @@ fifthRow.image = [UIImage imageNamed:@"5th-row"];
 
 
 ----------
-![](http://img.blog.csdn.net/20160801152104517)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicbutton3.gif)
 
 
 ----------
 好了，不是太坏。你可以发现当你使用iOS 7提供的弹簧动画方法时，它直接提供了一些值来获取你想要的感觉。NSWSpringAnimation给出的弹簧属性更容易理解，至少对我来说是这样，因为它们都操作了弹簧动作方程的不同属性。iOS 7的基于block的动画中的damping值实际上是一个解释值，这意味着苹果无论获取到你输入的什么值，都会做一些复杂的计算来操作这个值并将其放入弹簧动作方程式中。你可以说苹果操作了这个值，因为它在0和1之间改变弹性。而在实际的弹簧动作方程中，动作的时间（它到达平衡点或者最终位置的时间）是由弹簧的其他属性决定的，它不是你去设置然后强制弹簧遵循的。苹果的动画方法有一个你需要设置的持续时间，所以你在以一种并非完全遵循物理法则管理下的弹簧动作。这就是为什么我倾向于用JSWSpringAniamtion（或者Facebook Pop，我会马上提及），因为它们有着更加自然、逼真的弹簧动画。
+
+现在，让我们从上到下动画屏幕上的其他元素。每个都需要比前一个开始得稍微慢一点。同时我想要控制app启动后动画开始的时间，来看看我如何管理。
+
+```objective-c
+CGFloat initialDelay = 1.0f;
+CGFloat stutter = 0.3f;
+
+// 动画箭头图片
+[UIView animateWithDuration:2.1 delay:initialDelay
+    usingSpringWithDamping:0.6 initialSpringVelocity:0 options:0 animations:^{
+    [arrowView setFrame:CGRectMake(0, 0, windowWidth, 45)];
+} completion:NULL];
+
+// 动画Ministry of Fun文字
+[UIView animateWithDuration:2.1 delay:initialDelay + (1 * stutter)
+    usingSpringWithDamping:0.6 initialSpringVelocity:0 options:0 animations:^{
+    [ministryView setFrame:CGRectMake(0, 57, windowWidth, 28)];
+} completion:NULL];
+
+```
+
+我设置了两个`CGFloat`变量，一个initialDelay值来存储延迟时间，一个stutter来存储每个动画之间细微的延迟。这个数字对我们动画效果整体的感觉和流动感都非常重要。动画之间太长的延时会让他们觉得不连贯，太短就不足以形成我们想要构建的波浪效果。
+
+回到代码：第一个动画的delay属性就是initialDelay变量的值，因为这是来到屏幕上的第一个动画。第二个动画block的delay值为initialDelay+（1*stutter）。这表示它会等待开始的延迟时间，然后会等待stutter值乘以1的时间。接下来的所有动画都会遵循这个公式作为延时，并且每次都会加1倍stutter。这可以确保他们的动画之间都是同样的延时。
+
+这里是现在看起来的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160802092321648)
+
+
+----------
+
+我觉得这个看起来不错。老实说，只动画两个元素很难看出波浪效果是不是好的，因为你无法获取一个整体的真实感受，除非动画一系列的元素。所以让我们动画屏幕上的其他元素。
+
+```objective-c
+[UIView animateWithDuration:2.1 delay:initialDelay + (2 * stutter)
+    usingSpringWithDamping:0.6 initialSpringVelocity:0 options:0 animations:^{
+    [addButton setFrame:CGRectMake(0, 102, windowWidth, 45)];
+} completion:NULL];
+
+[UIView animateWithDuration:2.1 delay:initialDelay + (3 * stutter)
+    usingSpringWithDamping:0.6 initialSpringVelocity:0 options:0 animations:^{
+    [firstRow setFrame:CGRectMake(0, 170, windowWidth, 80)];
+} completion:NULL];
+
+[UIView animateWithDuration:2.1 delay:initialDelay + (4 * stutter)
+    usingSpringWithDamping:0.6 initialSpringVelocity:0 options:0 animations:^{
+    [secondRow setFrame:CGRectMake(0, 170+80, windowWidth, 80)];
+} completion:NULL];
+
+[UIView animateWithDuration:2.1 delay:initialDelay + (5 * stutter)
+    usingSpringWithDamping:0.6 initialSpringVelocity:0 options:0 animations:^{
+    [thirdRow setFrame:CGRectMake(0, 170+160, windowWidth, 80)];
+} completion:NULL];
+
+[UIView animateWithDuration:2.1 delay:initialDelay + (6 * stutter)
+    usingSpringWithDamping:0.6 initialSpringVelocity:0 options:0 animations:^{
+    [fourthRow setFrame:CGRectMake(0, 170+240, windowWidth, 80)];
+} completion:NULL];
+
+[UIView animateWithDuration:2.1 delay:initialDelay + (7 * stutter)
+    usingSpringWithDamping:0.6 initialSpringVelocity:0 options:0 animations:^{
+    [fifthRow setFrame:CGRectMake(0, 170+320, windowWidth, 80)];
+} completion:NULL];
+```
+
+现在我们动画了所有的元素到位置上了，让我们看看效果。
+
+
+----------
+![](http://img.blog.csdn.net/20160802095356521)
+
+
+----------
+对我来说感觉还不太对。动画的延时还是有点太长了，破坏了想要的波浪感。看起来一点也没有流动感。让我们降低延时，把stutter变量的值从0.3降为0.15来看看效果。
+
+
+----------
+![](http://img.blog.csdn.net/20160802095641116)
+
+
+----------
+很接近了，但我认为我们可以再缩小一点点延迟时间来让它更有天然的流动感，就像每个元素都牵引了下一个。让我们将stutter变量降为0.6。
+
+
+----------
+![](http://img.blog.csdn.net/20160802095833054)
+
+
+----------
+现在我们有些成果了。我认为它看起来很棒并且有非常好的波浪动作。让我们和Jakub原始的动作做一些比较。
+
+
+----------
+![](http://img.blog.csdn.net/20160802100132196)
+
+
+----------
+看起来我们匹配得很接近！所以从这个例子中学到了什么呢？
+
+* 基于block的`UIView`动画方法中的弹簧的damping值是一个抽象值，对获取一个好的感觉并没有什么用。这就是为什么我喜欢用真实的弹簧动作（不需要设置持续时间的），比如JSWSpringAnimation提供的那种。
+* 当实现一个像这个一样内置的动画时，调整动画之间的延时是得到一个好的波浪形动作的关键点。
 
 
 ----------
