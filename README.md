@@ -1847,7 +1847,7 @@ CGFloat stutter = 0.3f;
 
 
 ----------
-![](http://img.blog.csdn.net/20160802092321648)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicbutton5.gif)
 
 
 ----------
@@ -1890,7 +1890,7 @@ CGFloat stutter = 0.3f;
 
 
 ----------
-![](http://img.blog.csdn.net/20160802095356521)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicbutton7.gif)
 
 
 ----------
@@ -1898,7 +1898,7 @@ CGFloat stutter = 0.3f;
 
 
 ----------
-![](http://img.blog.csdn.net/20160802095641116)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicbutton8.gif)
 
 
 ----------
@@ -1906,7 +1906,7 @@ CGFloat stutter = 0.3f;
 
 
 ----------
-![](http://img.blog.csdn.net/20160802095833054)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/musicbutton9.gif)
 
 
 ----------
@@ -1914,7 +1914,7 @@ CGFloat stutter = 0.3f;
 
 
 ----------
-![](http://img.blog.csdn.net/20160802100132196)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/music.gif)
 
 
 ----------
