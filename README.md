@@ -1923,6 +1923,77 @@ CGFloat stutter = 0.3f;
 * 基于block的`UIView`动画方法中的弹簧的damping值是一个抽象值，对获取一个好的感觉并没有什么用。这就是为什么我喜欢用真实的弹簧动作（不需要设置持续时间的），比如JSWSpringAnimation提供的那种。
 * 当实现一个像这个一样内置的动画时，调整动画之间的延时是得到一个好的波浪形动作的关键点。
 
+我在我自己的iPhone app Interesting中也使用了波浪形的动画。来看看我的app的动画并构建它。
+
+### 动画Interesting的Stories Into Position
+当我的新闻app Interesting首次打开时，我会发起一个网络请求来拉取最近的文章。当请求返回时，我需要用`UITableView`来放置文章数据，每行一篇文章。一些app选择在数据返回时淡入列表，一些会将行一行行地滑动到位置上，而其他的则立即显示行，没有任何动画。我选择使用一个内置的类似我们刚刚构建的音乐播放器的效果，但不是水平地动画它们，我从底部垂直地动画它们。这就是我的加载动画的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160805145221847)
+
+
+----------
+要完成它，先来一步步地分解我做了什么。
+
+1. 如果数据返回了并且我调用了[self.tableView reloadData]，它会立即出现并且对用户可见。所以我首先让列表的透明度变为0，这样我就可以操作它，不让用户看到任何东西，直到我想让他们看见。
+2. 然后我会调用[self.tableView reloadData]将数据加载到列表行中去，这时候所有的行都在它们正常的位置上，但因为整个列表透明度为0并且是隐藏的，屏幕上什么都看不见。
+3. 我遍历现在屏幕上可见的行并且移动`UITableView`将行都放到屏幕底部。我通过改变列表的位置，将其移动到整个列表高度的下方来达到目的，这样每行都会藏在屏幕的底部了。
+4. 现在所有的行都在屏幕的底部了，我将alpha改回1.0来让列表变得可见。现在列表是可见的了，但素有的行都在屏幕底部所以看不到任何文章。
+5. 最后，我再次遍历所有的行将其推离屏幕底部，通过移除我初始设置的变换将其动画到原本的位置上。
+
+这个看上去相当简单的效果有这么多的步骤！这里是完成这些步骤的代码。
+
+```objective-c
+// 将列表变为不可见，重载数据
+self.tableView.alpha = 0.0f;
+[self.tableView reloadData];
+
+// 存储一个时间变量，这样我就可以调整每行动画之间的延迟时间
+CGFloat diff = .05;
+CGFloat tableHeight = self.tableView.bounds.size.height;
+NSArray *cells = [self.tableView visibleCells];
+
+// 遍历行并将它们移动到屏幕底部
+for (NSUInteger a = 0; a < [cells count]; a++) {
+    UITableViewCell *cell = [cells objectAtIndex:a];
+    if ([cell isKindOfClass:[UITableViewCell class]]) {
+
+        // 通过变换cell的Y坐标来讲其移动到屏幕底部
+        cell.transform = CGAffineTransformMakeTranslation(0, tableHeight);
+    }
+}
+
+// 现在所有的行都在屏幕底部了，将列表设为可见
+self.tableView.alpha = 1.0f;
+
+// 将每行动画回位置
+for (NSUInteger b = 0; b < [cells count]; b++) {
+    UITableViewCell *cell = [cells objectAtIndex:b];
+	
+    [UIView animateWithDuration:1.6 delay:diff*b usingSpringWithDamping:0.77
+        initialSpringVelocity:0 options:0 animations:^{
+        cell.transform = CGAffineTransformMakeTranslation(0, 0);
+     } completion:NULL];
+}
+```
+
+如果你注意第二个循环，在动画的block中，我的延迟值设为了diff*b。因为我在一个循环中，我可以同步地使用循环次数变量b来保持动画的时间，只需要操作每行的动画时间间隔即可。这可以确保每一行的动画之间都是同样的时间，来达到一个好的波浪形动作。这就是全部了！
+
+
+----------
+是时候换挡了。
+
+至此，我们使用了Core Animation来创建我们的动画界面。无论我们是使用iOS 7的基于block的动画方法及其弹簧属性，还是使用很棒的为我们创建了`CAKeyframeAnimation`的JNWSpringAnimation框架，我们都还在Core Animation的范围内，苹果有众多的框架管理了iOS繁多的界面表现。
+
+但有很多种方法可以解决问题，也就是说，还有其他的不使用苹果的Core Animation框架的方式可以在iOS app的屏幕上创建动作。
+
+其中一个创建动画的方法最近获取了很多的关注。它实在是iOS动画框架界的一股清流，而且已经在世界上一些最常用的app中被用来构建了非常棒的动画。
+
+我说的当然就是Facebook创建的杰出的Pop框架。
+
+你准备好学习一些新东西了吗？开始吧！
+
 
 ----------
 更多更新内容参见[我的博客](http://blog.csdn.net/column/details/cloudox-column3.html)  
