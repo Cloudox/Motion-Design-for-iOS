@@ -1930,7 +1930,7 @@ CGFloat stutter = 0.3f;
 
 
 ----------
-![](http://img.blog.csdn.net/20160805145221847)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/int.gif)
 
 
 ----------
