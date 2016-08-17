@@ -7,6 +7,7 @@
 * [SECTION 3](#SECTION 3)
 * [SECTION 4](#SECTION 4)
 * [SECTION 5](#SECTION 5)
+* [SECTION 6](#SECTION 6)
 
 ## <a name="SECTION 1"/>SECTION 1
 在2013年六月，苹果推出了iOS 7，并与iOS 6大相径庭，让设计师回归本初。曾经代表漂亮iOS设计的现实主义拟物化离去了，而一个更加平面、光滑，更加“计算机真实”的美学到来了。这种向平面设计专项的一个重大影响就是在Photoshop（或者任何可选的设计工具）中进行一个设计变得更简单、花费更少的时间、并且不再有差异。创建一个有着漂亮现实渐变色、阴影和高亮的app界面是一件很艰苦的事情。而创建一个根本没有渐变色和阴影并且主要由大块相同颜色组成的app界面明显更简单。
@@ -1930,7 +1931,7 @@ CGFloat stutter = 0.3f;
 
 
 ----------
-![](http://img.blog.csdn.net/20160805145221847)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%205/int.gif)
 
 
 ----------
@@ -1993,6 +1994,31 @@ for (NSUInteger b = 0; b < [cells count]; b++) {
 我说的当然就是Facebook创建的杰出的Pop框架。
 
 你准备好学习一些新东西了吗？开始吧！
+
+## <a name="SECTION 6"/>SECTION 6
+### 介绍Facebook的Pop
+在2014年4月，Facebook的工程师Kimon Tsinteris发布了Pop，Facebook构建用来支撑他们app Paper的一个弹簧动画框架。这个框架的起源其实早于Facebook，Kimon构建了其中的大部分用来支撑他被Facebook于2011年收购的电子书公司Push Pop Press。你可能记得Push Pop Press，它获得了苹果的设计奖，作为iPad的电子书，为被称为“Our Choice”的AI Gore所构建。
+
+![](http://img.blog.csdn.net/20160810104343921)
+
+[点击观看AI Gore's 'Our Choice' - an iPad app视频](https://www.youtube.com/watch?v=U-edAGLokak)
+
+“Our Choice”在2011年确实很有开创性。它是最早的有完整的基于手势来操作界面内容的iOS app之一。屏幕上的每个视觉元素都是弹簧动画的，有着很好的弹性和响应，这是从所未见的。
+
+时间快进到2014年早期，来介绍一些Facebook的Paper。Paper同样包含基于手势的控制和弹簧动画，并且可以发现，它全部基于Al Gore三年前的电子书的工作。对我们开发者来说幸运的是，Facebook认为他们的动画框架Pop值得公开到社区中去，这样其他人也能构建酷的基于弹簧动画的app了。
+
+### Pop VS Core Animation
+当我们在本书前面讨论Core Animation的时候，以及它是如何在一个基本的水平上工作的，我结识了model layer和presentation layer的不同。模型层表示已知的准确的CALayer预加到动画上的属性。如果你添加一个动画到layer上，然后在动画进行到一半时问模型层它的属性是什么，答案是不会反映任何动画当前的内容的。如果你想要知道动画中实时的、运动中的layer的值，你就得去看表现层。而一旦动画完成后，表现层就会消失，所以如果你不想你的layer回到开始的位置，你就需要设置模型层的属性来匹配动画的最终状态。
+
+这就是Core Animation的工作。这是苹果为了构建一个iPhone上用的动画框架在很多年前做出的一个基本的实现选择。而因为JNWSpringAnimation简单地为我们开发了一个依然是Core Animation对象的`CAKeyframeAnimation`，我们还是需要设置动画模型层的最终值来在完成时保持住。
+
+Pop是完全不同的！
+
+Pop不使用Core Animation来执行任何它提供的动画功能。不同之处在于它设置了一个特殊的时间对象来每1/60秒执行一次。那个每秒执行60次的代码会直接基于下一个你在弹簧动作中定义的位置更新任何你想要的属性。没有什么特别的、额外的layer添加到你的元素中去，Pop直接在`UIView`或者`CALayer`上改变属性，或者，有趣地在任何你想要的对象类型上改变。这意味着在动画中的任何时候，你都可以直接接触改变的属性的当前值而不用跳到任何表现层。并且更好的是，你不需要单独设置最终值让动画在那逗留，因为动画始终在实际的真实值上工作。
+
+这个Pop用来支撑整个框架的时间对象是`CADisplayLink`，它可以看做是`NSTimer`的一个更高级版本，NSTimer是Mac游戏开发者常年用来在他们的Mac和iOS游戏中一帧帧运行代码的。`NSTimer`可以在你想要的任何时候调用任何你想调用的代码，不断地重复或者只调用一次。如果你想每5秒钟调用一次代码就可以使用`NSTimer`来做。或者如果你想要每秒调用代码60次，也可以用`NSTimer`来做，但当这么快地调用代码的时候（比如每次运动一点点像素，一步步地动画一个界面元素），这个时间对象就会失去准确的同步刷新频率，你可能会丢失一些帧，从而导致一些奇怪的短暂跳跃。
+
+这就是`CADisplayLink`施展之处。`CADisplayLink`就是设计来避免这个问题的，因为它不是设置时间间隔，它一遍遍地调用你的方法的速率完全取决于屏幕的刷新频率。它随着屏幕的刷新来启动你的代码，这样你就有了最好的机会来每秒更新你的界面60次（平滑感知动作的时间）。这就是Pop用来将动画一像素一像素、1/60秒一次推动的方法。
 
 
 ----------
