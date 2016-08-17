@@ -1999,7 +1999,7 @@ for (NSUInteger b = 0; b < [cells count]; b++) {
 ### 介绍Facebook的Pop
 在2014年4月，Facebook的工程师Kimon Tsinteris发布了Pop，Facebook构建用来支撑他们app Paper的一个弹簧动画框架。这个框架的起源其实早于Facebook，Kimon构建了其中的大部分用来支撑他被Facebook于2011年收购的电子书公司Push Pop Press。你可能记得Push Pop Press，它获得了苹果的设计奖，作为iPad的电子书，为被称为“Our Choice”的AI Gore所构建。
 
-![](http://img.blog.csdn.net/20160810104343921)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/pop.gif)
 
 [点击观看AI Gore's 'Our Choice' - an iPad app视频](https://www.youtube.com/watch?v=U-edAGLokak)
 
