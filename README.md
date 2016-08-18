@@ -2041,7 +2041,7 @@ scale.springSpeed = 1.0f; // Between 0-20
 
 
 ----------
-![](http://img.blog.csdn.net/20160811090316583)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/pop2.gif)
 
 
 ----------
