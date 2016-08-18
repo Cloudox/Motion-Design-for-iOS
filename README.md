@@ -1999,7 +1999,7 @@ for (NSUInteger b = 0; b < [cells count]; b++) {
 ### 介绍Facebook的Pop
 在2014年4月，Facebook的工程师Kimon Tsinteris发布了Pop，Facebook构建用来支撑他们app Paper的一个弹簧动画框架。这个框架的起源其实早于Facebook，Kimon构建了其中的大部分用来支撑他被Facebook于2011年收购的电子书公司Push Pop Press。你可能记得Push Pop Press，它获得了苹果的设计奖，作为iPad的电子书，为被称为“Our Choice”的AI Gore所构建。
 
-![](http://img.blog.csdn.net/20160810104343921)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/pop.gif)
 
 [点击观看AI Gore's 'Our Choice' - an iPad app视频](https://www.youtube.com/watch?v=U-edAGLokak)
 
@@ -2019,6 +2019,60 @@ Pop不使用Core Animation来执行任何它提供的动画功能。不同之处
 这个Pop用来支撑整个框架的时间对象是`CADisplayLink`，它可以看做是`NSTimer`的一个更高级版本，NSTimer是Mac游戏开发者常年用来在他们的Mac和iOS游戏中一帧帧运行代码的。`NSTimer`可以在你想要的任何时候调用任何你想调用的代码，不断地重复或者只调用一次。如果你想每5秒钟调用一次代码就可以使用`NSTimer`来做。或者如果你想要每秒调用代码60次，也可以用`NSTimer`来做，但当这么快地调用代码的时候（比如每次运动一点点像素，一步步地动画一个界面元素），这个时间对象就会失去准确的同步刷新频率，你可能会丢失一些帧，从而导致一些奇怪的短暂跳跃。
 
 这就是`CADisplayLink`施展之处。`CADisplayLink`就是设计来避免这个问题的，因为它不是设置时间间隔，它一遍遍地调用你的方法的速率完全取决于屏幕的刷新频率。它随着屏幕的刷新来启动你的代码，这样你就有了最好的机会来每秒更新你的界面60次（平滑感知动作的时间）。这就是Pop用来将动画一像素一像素、1/60秒一次推动的方法。
+
+让我们看一些简单的Pop动画时如何工作的。
+
+```objective-c
+// 添加我们的红球到界面上
+UIView *redBall = [[UIView alloc] initWithFrame:CGRectMake(300, 300, 75, 75)];
+redBall.backgroundColor = [UIColor redColor];
+redBall.layer.cornerRadius = 75/2; // Half the width
+[self.window addSubview:redBall];
+
+POPSpringAnimation *scale =
+    [POPSpringAnimation animationWithPropertyNamed:kPOPViewScaleXY];
+scale.toValue = [NSValue valueWithCGPoint:CGPointMake(2, 2)];
+scale.springBounciness = 20.0f; // Between 0-20
+scale.springSpeed = 1.0f; // Between 0-20
+[redBall pop_addAnimation:scale forKey:@"scale"];
+```
+
+这就是这个代码产生的动画。
+
+
+----------
+![](http://img.blog.csdn.net/20160811090316583)
+
+
+----------
+很有弹性！我们已经谈论了很多关于如何用JNWSpringAnimation和Core Animation创建弹簧动画的内容，现在来看看Pop的方法。
+
+```objective-c
+POPSpringAnimation *scale =
+    [POPSpringAnimation animationWithPropertyNamed:kPOPViewScaleXY];
+scale.toValue = [NSValue valueWithCGPoint:CGPointMake(2, 2)];
+scale.springBounciness = 20.0f; // Between 0-20
+scale.springSpeed = 1.0f; // Between 0-20
+[redBall pop_addAnimation:scale forKey:@"scaleAnimation"];
+```
+
+首先，我们创建了一个新的POPSpringAnimation对象。它被设计用 +animationWithPropertyNamed: 方法来初始化，获取参数来告诉Pop你想要动画什么属性。这非常像我们在JNWSpringAnimation中添加的关键路径值，但不是一个简单的字符串，Pop设计了很多值，这样你就不需要记住字符串。这里是一小部分Pop随时可以动画的属性。
+
+* kPOPViewAlpha——视图的透明度
+* kPOPViewFrame——视图的整体框架
+* kPOPViewScaleXY——视图的拉伸（X和Y轴）
+* kPOPViewBackgroundColor——视图的背景色
+* kPOPLayerCornerRadius——layer的角的度数
+* kPOPLayerRotation——layer的旋转度
+* kPOPLayerShadowRadius——layer下阴影的尺寸
+
+所有的属性列表可以在Pop的GitHub找到。那是一个很长很长的清单，并且由于开发者一直在贡献，清单还在不断增长。
+
+你可能注意到这些属性的命名有一些有趣的地方。我们有一个名为kPOPViewAlpha的属性，而另一个又名为kPOPLayerRotation。Pop酷的地方在于基于你传入的属性，你可以操作`UIView`的属性，也可以操作`CALayer`的属性。这完全取决于你，你只需要让Pop知道那一长串它支持的属性清单中你想要动画的是哪一个，无论它是一个view属性、layer属性或者任何类型的属性。Pop允许你更新任何你想要的类型的变量，甚至是与界面动画无关的。
+
+我们设置了 toValue为 [NSValue valueWithCGPoint:CGPointMake(2, 2)] ，看起来可能会有点奇怪。为什么我们要将{2,2}这个点（我们的X和Y拉伸值）放到一个`NSValue`对象中去？好吧，这就是Pop工作的方式，它期待传到toValue参数中的是一个准确类型的值。而这个值得类型取决于我们添加的类型。它总是期待一个对象，在这个例子中，它想要一个`CGPoint`转化成的`NSValue`对象。不幸的是Pop的这个部分在文档中有点难懂，但随着开发者的贡献它也在变得更好。
+
+至于要考虑的fromValue，我们在这个例子中没有设置它，因为Pop做了一些很酷的事情：如果你不设置它，它就会自动计算当前的开始值，并从这里开始。太赞了！
 
 
 ----------
