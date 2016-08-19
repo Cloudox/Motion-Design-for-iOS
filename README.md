@@ -2074,6 +2074,88 @@ scale.springSpeed = 1.0f; // Between 0-20
 
 至于要考虑的fromValue，我们在这个例子中没有设置它，因为Pop做了一些很酷的事情：如果你不设置它，它就会自动计算当前的开始值，并从这里开始。太赞了！
 
+就如JNWSpringAnimation一样，你可以调整想要模仿的弹簧动作的属性。这里是上个例子中相关的部分。
+
+```objective-c
+scale.springBounciness = 20.0f; // Between 0-20
+scale.springSpeed = 1.0f; // Between 0-20
+```
+
+Pop允许你调整弹簧的弹性和速度。每个值都可以从0到20.就如iOS 7中基于block的弹簧动画一样，这些值都是算入弹簧动作方程式的真实值的一个抽象。而不同于iOS 7的是，我认为Pop在抽象这些值时做的很棒，我还从没用Pop创建过一个看起来不自然或者违反物理法则的弹簧动作。
+
+如果你想要调整动作方程使用的真实值，你也可以深入到一个更深的层次来操作它们。
+
+```objective-c
+scale.dynamicsFriction = 20;
+scale.dynamicsMass = 1;
+scale.dynamicsTension = 300;
+```
+
+这些值类似于JNWSpringAnimation中使用的值，但不完全一样，所以如果你想要准确地将一个JNWSpringAnimation变成Pop，就需要进行一些调整。幸运的是，springBounciness和springSpeed值在控制弹簧的动作上已经做得很好了，所以我经常就直接使用它们。
+
+让我们看看弹性值的调整会如何影响动画。
+
+
+----------
+![](http://img.blog.csdn.net/20160812091455032)
+
+
+----------
+这三个球的速度都是10,。红球的弹性是5，篮球是12，绿球是20。
+
+最终，我们将动画添加到我们想要动画的对象上去。
+
+```objective-c
+[redBall pop_addAnimation:scale forKey:@"scaleAnimation"];
+```
+
+我们在视图上调用 -pop_addAnimation:forKey: 方法，并动画对象放入 pop_addAnimation:，然后将“scale”放入 forKey:。不同于JNWSpringAnimation和其他Core Animation的是，我们传入的键不需要匹配我们动画的属性。这个键只是视图上这个动画的一个唯一的名字，可以是你想要的任何值。如果你想要在运行的时候获取一个动画，你可以通过这个键来询问视图或者layer的Pop动画，这就是它的用处。
+
+现在让我们来一次性添加一些不同的动画，每个都动画不同的属性。在我们展示代码之前，这里是它看起来的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160812092120887)
+
+
+----------
+这个动画做了四件事情：视图的尺寸拉大，移动到了右边，旋转，并且还改变了背景色。这是我们添加的四个分开的动画，并且有四个分开的动画对象，每个表示一个不同的动画。
+
+```objective-c
+POPSpringAnimation *scale =
+    [POPSpringAnimation animationWithPropertyNamed:kPOPViewScaleXY];
+scale.toValue = [NSValue valueWithCGPoint:CGPointMake(1.5, 1.5)];
+scale.springBounciness = 15;
+scale.springSpeed = 5.0f;
+[orangeSquare pop_addAnimation:scale forKey:@"scale"];
+
+POPSpringAnimation *move =
+    [POPSpringAnimation animationWithPropertyNamed:kPOPLayerPositionX];
+move.toValue = @(500);
+move.springBounciness = 15;
+move.springSpeed = 5.0f;
+[orangeSquare.layer pop_addAnimation:move forKey:@"position"];
+
+POPSpringAnimation *spin =
+    [POPSpringAnimation animationWithPropertyNamed:kPOPLayerRotation];
+spin.toValue = @(M_PI*4);
+spin.springBounciness = 15;
+spin.springSpeed = 5.0f;
+[orangeSquare.layer pop_addAnimation:spin forKey:@"spin"];
+
+POPSpringAnimation *color =
+    [POPSpringAnimation animationWithPropertyNamed:kPOPViewBackgroundColor];
+color.toValue = [UIColor greenColor];
+color.springBounciness = 15;
+color.springSpeed = 5.0f;
+[orangeSquare pop_addAnimation:color forKey:@"colorChange"];
+```
+
+我们使用了操作下面这些属性的动画：kPOPViewScaleXY、kPOPLayerPositionX、kPOPLayerRotation、kPOPViewBackgroundColor。两个动画时关于视图的，两个动画时关于layer的。
+
+如果你观察一下我们设置为最终值的toValue变量，就可以看到一些不同的设置方法。如我之前所说，Pop一个有趣的（也有点烦人的？）方面在于Pop期望toValue改变的值取决于你要动画的属性。对于拉伸来说，我们已经说过了它想要一个`NSValue`对象。对于X位置动画，我们可以直接使用Objective-C的快捷方式@（500）来简单地给对象带来500.对于旋转，我们同样使用了特殊的@（）语法。对于颜色我们设定了一个`UIColor`对象。所以你可以看到，因为Pop支撑了太多的动画属性，就有一些需要被理解的细微差别。我曾经混淆了`NSValue包装的`CGPoint`，并且盯着我的代码看了30秒才意识到它想要一些不同的值。
+
+是时候用Pop来构建一些酷的东西了。
 
 ----------
 更多更新内容参见[我的博客](http://blog.csdn.net/column/details/cloudox-column3.html)  
