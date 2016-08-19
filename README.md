@@ -2115,7 +2115,7 @@ scale.dynamicsTension = 300;
 
 
 ----------
-![](http://img.blog.csdn.net/20160812092120887)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/pop4.gif)
 
 
 ----------
