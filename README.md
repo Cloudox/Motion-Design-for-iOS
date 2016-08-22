@@ -2162,7 +2162,7 @@ color.springSpeed = 5.0f;
 
 
 ----------
-![](http://img.blog.csdn.net/20160815092616333)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/popgear.gif)
 
 
 ----------
@@ -2231,7 +2231,7 @@ if (scale) {
 
 
 ----------
-![](http://img.blog.csdn.net/20160815100422104)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/popgear2.gif)
 
 
 ----------
@@ -2314,7 +2314,7 @@ if (scale) {
 
 
 ----------
-![](http://img.blog.csdn.net/20160815101529775)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/popgear.gif)
 
 
 ----------
