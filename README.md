@@ -2097,7 +2097,7 @@ scale.dynamicsTension = 300;
 
 
 ----------
-![](http://img.blog.csdn.net/20160812091455032)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/pop3.gif)
 
 
 ----------
@@ -2115,7 +2115,7 @@ scale.dynamicsTension = 300;
 
 
 ----------
-![](http://img.blog.csdn.net/20160812092120887)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/pop4.gif)
 
 
 ----------
@@ -2156,6 +2156,169 @@ color.springSpeed = 5.0f;
 如果你观察一下我们设置为最终值的toValue变量，就可以看到一些不同的设置方法。如我之前所说，Pop一个有趣的（也有点烦人的？）方面在于Pop期望toValue改变的值取决于你要动画的属性。对于拉伸来说，我们已经说过了它想要一个`NSValue`对象。对于X位置动画，我们可以直接使用Objective-C的快捷方式@（500）来简单地给对象带来500.对于旋转，我们同样使用了特殊的@（）语法。对于颜色我们设定了一个`UIColor`对象。所以你可以看到，因为Pop支撑了太多的动画属性，就有一些需要被理解的细微差别。我曾经混淆了`NSValue包装的`CGPoint`，并且盯着我的代码看了30秒才意识到它想要一些不同的值。
 
 是时候用Pop来构建一些酷的东西了。
+
+### 构建立即响应的按钮
+你玩过Loren Brichter的游戏Letterpress吗？我很喜欢的Loren构建的一个关于界面的东西可能不是每个人都明显喜欢的：我喜欢每个按钮在用户按下时立即切换到一个不同的状态的样子。绝对不会延迟。这不是一个简单实现的行为，因为即使你可以将一个图片设为`UIButton`的`UIControlStateHighlighted`状态图，它也只会在点击发生后一小会启动，而且它不允许更进一步的代码来运行它。如果我想要在用户点击一个`UIButton`后立即运行一个动画，我就不得不自己写一个简单的自定义按钮类。但首先，先来看一看我们要构建的是什么。
+
+
+----------
+![](http://img.blog.csdn.net/20160815092616333)
+
+
+----------
+如果我想要在用户点击后立即运行代码，我就不得不自己写一个好的`UIButton`子类，这样我就可以重写一些方法，即 -touchesBegan:withEvent: 和 -touchesEnded:withEvent:。iOS中的每个界面的控制都从`UIResponder`继承了这些方法，它是一个处理所有触摸控制事件的父类。有了子类，我就可以塞一些自己的代码来在这些方法启动的时候运行。来看看`DTCTestButton`的实现文件，这是我们的按钮子类，会为我们处理一些魔法。
+
+```objective-c
+#import "DTCTestButton.h"
+#import "POP.h"
+
+@implementation DTCTestButton
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    // 自定义一些按钮第一次被点击时要运行的代码
+
+    [super touchesBegan:touches withEvent:event];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    // 自定义一些按钮不再被点击时要运行的代码
+
+    [super touchesEnded:touches withEvent:event];
+}
+
+@end
+```
+
+我们这里只定义了两个方法，我们想要将我们的代码放到这些方法里面去。当子类化一个苹果提供的对象，比如`UIButton`时，做一个好的城市居民并确保调用super的关于这些方法的实现是很重要的，因为我们不知道苹果在这两个方法中需要运行什么代码，而且不想破坏按钮的默认行为。我们调用super后，就可以在这两个方法中添加任何我们想要的行为。
+
+让我们添加一个Pop动画到 -touchesBegan:withEvent:中去。
+
+```objective-c
+POPSpringAnimation *scale = [self pop_animationForKey:@"scale"];
+
+if (scale) {
+    scale.toValue = [NSValue valueWithCGPoint:CGPointMake(0.8, 0.8)];
+} else {
+    scale = [POPSpringAnimation animationWithPropertyNamed:kPOPViewScaleXY];
+    scale.toValue = [NSValue valueWithCGPoint:CGPointMake(0.8, 0.8)];
+    scale.springBounciness = 20;
+    scale.springSpeed = 18.0f;
+    [self pop_addAnimation:scale forKey:@"scale"];
+}
+```
+
+这和我们之前写的Pop代码有点不同。当使用Pop来构建好的响应动画去关联触摸动作时，一个聪明的做法是看看是否已经有一个Pop动画关联到这个视图或者layer了。如果有，只要更新已经存在的动画的toValue属性就可以了。Pop知道当前的值是什么并且已经设置好弹性和速度变量了，所以你不用做任何其他的事情。这避免了添加另一个错误的Pop动画来操作同样的值（在这个例子中，是kPOPViewScaleXY），这会造成愚蠢的结果。通过使用现存的动画，Pop可以优雅地从它的当前位置修改到你设置的新的toValue并进行一个漂亮、平滑的过度。这也是为什么Pop动画有一个名字：这样你就可以通过给出你之前设置的动画的名字来询问视图或者layer它们是否有已经添加进去的Pop动画并获取到动画对象。
+
+如果动画不是已经存在，我们就和平常一样创建一个新的Pop动画对象，设置弹簧的动作属性，比如弹性，设置toValue，然后添加动画到视图或者layer上。在这个例子中，我们动画了视图的尺寸，所以我们将动画添加到视图上。
+
+现在让我们在触摸事件结束时做同样的事情。这次代码放在 -touchesEnded:withEvent:中。
+
+```objective-c
+POPSpringAnimation *scale = [self pop_animationForKey:@"scale"];
+
+if (scale) {
+    scale.toValue = [NSValue valueWithCGPoint:CGPointMake(1.0, 1.0)];
+} else {
+    scale = [POPSpringAnimation animationWithPropertyNamed:kPOPViewScaleXY];
+    scale.toValue = [NSValue valueWithCGPoint:CGPointMake(1.0, 1.0)];
+    scale.springBounciness = 20;
+    scale.springSpeed = 18.0f;
+    [self pop_addAnimation:scale forKey:@"scale"];
+}
+```
+
+如果你看看触摸事件开始时0.8的toValue以及触摸结束时的1.0的toValue，你就可以猜到整个动画会在用户点击按钮时稍微收缩按钮的尺寸，然后会在他们停止触摸时弹回完整的尺寸。完全正确！这里是它现在的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160815100422104)
+
+
+----------
+
+很有意思！让我们再加一点点旋转动画来增色。它基本上和我们已经添加的代码一样，只是重复它，修改动画类型，然后改变toValue值。这里是完整的代码，以及一些注释。
+
+```
+// 当用户开始点击时立即调用
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {    
+    // 看动画是否已经被添加到视图或者layer上
+    POPSpringAnimation *scale = [self pop_animationForKey:@"scale"];
+    POPSpringAnimation *rotate = [self.layer pop_animationForKey:@"rotate"];
+    
+    // 如果scale动画已经存在，就设置toValue
+    if (scale) {
+        scale.toValue = [NSValue valueWithCGPoint:CGPointMake(0.8, 0.8)];
+    } else {
+    	// 如果不存在，就创建并添加它
+        scale = [POPSpringAnimation animationWithPropertyNamed:kPOPViewScaleXY];
+        scale.toValue = [NSValue valueWithCGPoint:CGPointMake(0.8, 0.8)];
+        scale.springBounciness = 20;
+        scale.springSpeed = 18.0f;
+        [self pop_addAnimation:scale forKey:@"scale"];
+    }
+    
+    // 如果旋转动画已经存在，就设置toValue
+    if (rotate) {
+        rotate.toValue = @(M_PI/6); // 旋转到1/6th π角度
+    } else {
+        // 旋转动画时layer上的，所以我们添加到layer上去
+        rotate = [POPSpringAnimation animationWithPropertyNamed:kPOPLayerRotation];
+        rotate.toValue = @(M_PI/6);
+        rotate.springBounciness = 20;
+        rotate.springSpeed = 18.0f;
+
+        // 添加到layer上，而不是view
+        [self.layer pop_addAnimation:rotate forKey:@"rotate"];
+    }
+
+    [super touchesBegan:touches withEvent:event];
+}
+
+// 在用户离开手指时立即调用
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    // 看动画是否存在（由于这是用户离开时，基本是已经存在的）
+    POPSpringAnimation *scale = [self pop_animationForKey:@"scale"];
+    POPSpringAnimation *rotate = [self pop_animationForKey:@"rotate"];
+
+    if (scale) {
+    	// 拉伸回1.0的完整尺寸
+        scale.toValue = [NSValue valueWithCGPoint:CGPointMake(1.0, 1.0)];
+    } else {
+        scale = [POPSpringAnimation animationWithPropertyNamed:kPOPViewScaleXY];
+        scale.toValue = [NSValue valueWithCGPoint:CGPointMake(1.0, 1.0)];
+        scale.springBounciness = 20;
+        scale.springSpeed = 18.0f;
+        [self pop_addAnimation:scale forKey:@"scale"];
+    }
+
+    if (rotate) {
+    	// 旋转回0角度的初始位置
+        rotate.toValue = @(0);
+    } else {
+        rotate = [POPSpringAnimation animationWithPropertyNamed:kPOPLayerRotation];
+        rotate.toValue = @(0);
+        rotate.springBounciness = 20;
+        rotate.springSpeed = 18.0f;
+
+        // 再次确保添加你的layer动画到layer上去。我曾经失误过很多次，这会导致一个有趣的bug :)
+        [self.layer pop_addAnimation:rotate forKey:@"rotate"];
+    }
+
+    [super touchesEnded:touches withEvent:event];
+}
+```
+
+动画代码是重复的。简单，但是重复。它的一个缺点是需要很多行代码来完整构建你的动画，但优点是能让你练习写很多动画代码，所以我认为你可以学的更快。
+
+再一次，这里是我们构建的最终动画。它是一个很有趣的效果，会在用户点击按钮时立即启动，它会让你的界面感觉响应很快。这里的弹性效果很显著，所以当添加动画到你的真实app界面时，去使用一会app的动画，并确保它们的速度和动作时合适且不分散注意力的。
+
+
+----------
+![](http://img.blog.csdn.net/20160815101529775)
+
+
+----------
+现在让我们来用Pop做一些有趣的东西！
 
 ----------
 更多更新内容参见[我的博客](http://blog.csdn.net/column/details/cloudox-column3.html)  
