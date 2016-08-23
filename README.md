@@ -2320,6 +2320,93 @@ if (scale) {
 ----------
 现在让我们来用Pop做一些有趣的东西！
 
+### 构建一个动画的汉堡按钮
+汉堡按钮和滑出式菜单可能是整个产业中最两极分化的界面元素。苹果的狂热支持者反对汉堡按钮和相应的滑出式菜单，说设计师（以及工程师、产品经理和CEO们）喜欢在那堆积尽可能多的东西，因为你有了很多垂直地空间。
+
+我不能说我不认同，因为用户测试表明用户其实不太使用滑出式菜单，但可能我是一个伪君子，因为我还是在我的iPhone app Interesting中使用了一个汉堡按钮，这样看来我也是一个问题！不论如何，如果你打算使用一个汉堡按钮，你也要让它有趣、讨喜来让人们点击。
+
+所以一个汉堡按钮的基本元素是什么？典型的是有三个水平栏来描绘常规状态，然后如果你想要精致一点的话，你可以在菜单打开时将栏换成X形。当然了，Pop就是用来让用户界面开发师变得精致的，所以为什么不给这个过渡加上一些动画呢？
+
+稍微看一下我们要构建的是什么。
+
+
+----------
+![](http://img.blog.csdn.net/20160816090240050)
+
+
+----------
+开始时，我们有一个圆形的黑色按钮，里面中间有一个汉堡形的线。当按钮被点击时，它动画到一个稍微小一点的尺寸。但点击结束时，线会动画城红色的X。当点击X状态时，动画会回到原始的颜色和位置。这是一个明显简化的关于发生了什么的解释，让我们来看看代码。
+
+```objective-c
+// 将汉堡按钮添加到屏幕上
+self.hamburgerButton = [DTCTestButton buttonWithType:UIButtonTypeCustom];
+[self.hamburgerButton addTarget:self action:@selector(didTapHamburgerButton:)
+    forControlEvents:UIControlEventTouchUpInside];
+self.hamburgerButton.backgroundColor = [UIColor blackColor];
+[self.hamburgerButton setFrame:CGRectMake(200, 200, 150, 150)];
+self.hamburgerButton.layer.cornerRadius = 75;
+[self.window addSubview:self.hamburgerButton];
+```
+
+我们将汉堡按钮设为类的@property，这样我们就可以通过self.hamburgerButton来调用它。它使用了我们在之前的例子里创建的同样的按钮子类，这样我们就可以在用户点击时立即获取好的有弹性的感觉。我们还设置按钮在用户松开他们点击按钮的手指时的事件`UIControlEventTouchUpInside`下调用我们的方法 -didTapHamburgerButton: 。我们还将按钮设为黑色的并且有圆角。
+
+这里是我们目前有的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160816094925790)
+
+
+----------
+该把我们的汉堡线作为子视图添加到按钮上了。
+
+```objective-c
+CGFloat sectionWidth = 80;
+CGFloat sectionHeight = 11;
+
+// 添加上、中、下汉堡线
+self.top = [[UIView alloc] initWithFrame:
+    CGRectMake(self.hamburgerButton.bounds.size.width/2 - sectionWidth/2,
+    40, sectionWidth, sectionHeight)];
+self.top.backgroundColor = [UIColor whiteColor];
+self.top.userInteractionEnabled = NO;
+self.top.layer.cornerRadius = sectionHeight/2;
+[self.hamburgerButton addSubview:self.top];
+
+self.middle = [[UIView alloc] initWithFrame:
+    CGRectMake(self.hamburgerButton.bounds.size.width/2 - sectionWidth/2,
+    69, sectionWidth, sectionHeight)];
+self.middle.backgroundColor = [UIColor whiteColor];
+self.middle.userInteractionEnabled = NO;
+self.middle.layer.cornerRadius = sectionHeight/2;
+[self.hamburgerButton addSubview:self.middle];
+
+self.bottom = [[UIView alloc] initWithFrame:
+    CGRectMake(self.hamburgerButton.bounds.size.width/2 - sectionWidth/2,
+    99, sectionWidth, sectionHeight)];
+self.bottom.backgroundColor = [UIColor whiteColor];
+self.bottom.userInteractionEnabled = NO;
+self.bottom.layer.cornerRadius = sectionHeight/2;
+[self.hamburgerButton addSubview:self.bottom];
+```
+
+我设置了一些我们会在这个代码中重复用到的`CGFloat`的数字变量。我添加了三个`UIView`对象到主汉堡按钮上，每个都是白色背景的圆角矩形。它们都放置在大汉堡按钮的水平中心，并在垂直方向上分离。这段代码中最有趣的地方在于我设置这些每个视图的UserInteractionEnabled属性为NO。如果我们不对这些视图这样做，如果直接点击按钮，会吞没触摸事件并且不会传递到实际的完整汉堡按钮上。这里是现在看起来的样子。
+
+
+----------
+![](http://img.blog.csdn.net/20160816095610824)
+
+
+----------
+现在不添加任何代码，因为这个按钮是我们在之前的例子中创建的`UIButton`子类`DTCTestButton`类型的，已经有了一些动画了。
+
+
+----------
+![](http://img.blog.csdn.net/20160816100007283)
+
+
+----------
+
 ----------
 更多更新内容参见[我的博客](http://blog.csdn.net/column/details/cloudox-column3.html)  
 [回到目录](#Catalogue)
