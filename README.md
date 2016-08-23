@@ -2331,7 +2331,7 @@ if (scale) {
 
 
 ----------
-![](http://img.blog.csdn.net/20160816090240050)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/hamburger.gif)
 
 
 ----------
@@ -2354,7 +2354,7 @@ self.hamburgerButton.layer.cornerRadius = 75;
 
 
 ----------
-![](http://img.blog.csdn.net/20160816094925790)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/hamburgerblack.png)
 
 
 ----------
@@ -2394,7 +2394,7 @@ self.bottom.layer.cornerRadius = sectionHeight/2;
 
 
 ----------
-![](http://img.blog.csdn.net/20160816095610824)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/hamburgerlines.png)
 
 
 ----------
@@ -2402,7 +2402,7 @@ self.bottom.layer.cornerRadius = sectionHeight/2;
 
 
 ----------
-![](http://img.blog.csdn.net/20160816100007283)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/hamburger2.gif)
 
 
 ----------
