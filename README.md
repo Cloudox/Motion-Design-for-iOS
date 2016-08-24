@@ -2331,7 +2331,7 @@ if (scale) {
 
 
 ----------
-![](http://img.blog.csdn.net/20160816090240050)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/hamburger.gif)
 
 
 ----------
@@ -2354,7 +2354,7 @@ self.hamburgerButton.layer.cornerRadius = 75;
 
 
 ----------
-![](http://img.blog.csdn.net/20160816094925790)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/hamburgerblack.png)
 
 
 ----------
@@ -2394,7 +2394,7 @@ self.bottom.layer.cornerRadius = sectionHeight/2;
 
 
 ----------
-![](http://img.blog.csdn.net/20160816095610824)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/hamburgerlines.png)
 
 
 ----------
@@ -2402,7 +2402,84 @@ self.bottom.layer.cornerRadius = sectionHeight/2;
 
 
 ----------
-![](http://img.blog.csdn.net/20160816100007283)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/hamburger2.gif)
+
+
+----------
+
+我们现在真正想做的是让线动画交叉变成X。所以让我们进入我们的 didTapHamburgerButton: 方法，我们每次点击这个按钮都会调用它，来看一看我们要做什么。
+
+```objective-c
+- (void)didTapHamburgerButton:(id)sender {	
+    if (self.hamburgerOpen) {
+        self.hamburgerOpen = NO;
+        // 添加把X变回三条线的动画
+    } else {
+        self.hamburgerOpen = YES;
+        // 添加把三条线变成X的动画
+    }
+}
+```
+
+我们需要一种方式来记录按钮是否被动画成X了（如果是一个完整的app，也就是滑出式菜单是否被推出了），所以我天界了一个@property（BOOL）hamburgerOpen到类上，这样我们就可以每次都设置它并且知道按钮当前的状态。这是我们在这个方法中做任何事情前都应该先检查的变量，因为它的值会指示我们需要执行何种类型的动画。
+
+让我们从初始状态开始，也就是self.hamburgerOpen是false，并且代码会从上面的else开始执行。在进入实际的代码之前，让我们讨论一个计划来将三条水平线变成红色的X。
+
+1. 我们要将顶部的线向下旋转到45度角
+2. 我们要将底部的线向上旋转45度角
+3. 我们不需要中间的线所以就直接淡出它
+4. 旋转后的线可能不会很好地交叉，所以我们要动画它们到准确的位置
+5. 将两根交叉的线从白色动画到红色
+
+如果你注意了，可能会意识到我们有很多动画要执行，你是对的。这不是一个不重要的例子，它由多个单独的动画组成，但如大多数动画代码一样，它会一步一步执行。我们一直一次只写一个动画block，除了这次有很多动画！让我们先从淡出中间行开始。
+
+```objective-c
+// 淡出中间行
+[UIView animateWithDuration:0.2 animations:^{
+    self.middle.alpha = 0.0f;
+}];
+```
+
+只是一个简单的基于block的`UIView`动画。这个淡出动画的目标是让中间行消失，所以我们不需要做任何其他的事情。嗷，我应该提一下，我将顶部、中间和底部的线都作为类的@property了，这就是为什么我们可以用self.前缀获取这个变量。
+
+接下来，让我们把省下来的两根线从白色动画成红色。幸运的是，Pop让它变得很简单，你只需要设置toValue的颜色为你最终想要的颜色，它会自动插入中间的颜色。
+
+```objective-c
+// 将顶部和顶部线的颜色变为红色
+POPSpringAnimation *topColor = [self.top pop_animationForKey:@"topColor"];
+
+if (topColor) {
+    topColor.toValue = [UIColor redColor];
+} else {
+    topColor =
+        [POPSpringAnimation animationWithPropertyNamed:kPOPViewBackgroundColor];
+    topColor.toValue = [UIColor redColor];
+    topColor.springBounciness = 0;
+    topColor.springSpeed = 18.0f;
+    [self.top pop_addAnimation:topColor forKey:@"topColor"];
+}
+
+POPSpringAnimation *bottomColor = [self.bottom pop_animationForKey:@"bottomColor"];
+
+if (bottomColor) {
+    bottomColor.toValue = [UIColor redColor];
+} else {
+    bottomColor =
+        [POPSpringAnimation animationWithPropertyNamed:kPOPViewBackgroundColor];
+    bottomColor.toValue = [UIColor redColor];
+    bottomColor.springBounciness = 0;
+    bottomColor.springSpeed = 18.0f;
+    [self.bottom pop_addAnimation:bottomColor forKey:@"bottomColor"];
+}
+```
+
+就如我们之前的按钮例子一样，当我们重复一个用户动作时，我们需要确保我们的动画时流动的，即使用户疯狂地快速点击按钮并打断我们的动画。从当前值开始动画非常重要，这样一切就是自然的。这就是为什么我在创建并添加新动画前做了一个topColor和bottomColor动画对象是否已经存在的检查。如果它们存在，我们就使用存在的动画并且只设置一个新的toValue，如果不存在，我们就构建一个新的动画对象。还有，我对这个颜色过渡没有使用任何弹性，因为我确实不想颜色动画过度迭代红色然后变成一些奇怪的颜色。
+
+这时候当用户点击按钮时我们还没有X，但已经有了这个可爱的视觉了。
+
+
+----------
+![](http://img.blog.csdn.net/20160817091928335)
 
 
 ----------
