@@ -2525,7 +2525,7 @@ Pop的旋转动画时在layer上操作的（看到kPOPLayerRotation了没），�
 
 
 ----------
-![](http://img.blog.csdn.net/20160818093016580)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/hamweird.png)
 
 
 ----------
@@ -2567,7 +2567,7 @@ if (bottomPosition) {
 
 
 ----------
-![](http://img.blog.csdn.net/20160818093806575)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/hamcrossed.png)
 
 
 ----------
@@ -2575,7 +2575,7 @@ if (bottomPosition) {
 
 
 ----------
-![](http://img.blog.csdn.net/20160818094224373)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/hamburger.gif)
 
 
 ----------
