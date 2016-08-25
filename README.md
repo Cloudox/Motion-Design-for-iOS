@@ -2479,7 +2479,103 @@ if (bottomColor) {
 
 
 ----------
-![](http://img.blog.csdn.net/20160817091928335)
+![](https://github.com/Cloudox/Motion-Design-for-iOS/blob/master/SECTION%206/hamred.png)
+
+
+----------
+
+我们现在还剩两个动画，但它们比较大，需要一些思考。我们需要将顶部的线顺时针旋转45度（所以右边向下倾斜），然后我们需要底部的线逆时针旋转45度（所以右边向上倾斜）。逆时针旋转意味着我们需要旋转一个负值，所以是-45度。当然了，动画不会接受度数值，它们需要角度值，45度在角度上是π/4。来做一些旋转动画。
+
+```objective-c
+// 旋转顶部的线来构成X
+POPSpringAnimation *topRotate =
+    [self.top.layer pop_animationForKey:@"topRotate"];
+
+if (topRotate) {
+    topRotate.toValue = @(-M_PI/4);
+} else {
+    topRotate =
+        [POPSpringAnimation animationWithPropertyNamed:kPOPLayerRotation];
+    topRotate.toValue = @(-M_PI/4);
+    topRotate.springBounciness = 11;
+    topRotate.springSpeed = 18.0f;
+    [self.top.layer pop_addAnimation:topRotate forKey:@"topRotate"];
+}
+
+// 旋转底部的线来构成X
+POPSpringAnimation *bottomRotate =
+    [self.bottom.layer pop_animationForKey:@"bottomRotate"];
+
+if (bottomRotate) {
+    bottomRotate.toValue = @(M_PI/4);
+} else {
+    bottomRotate =
+        [POPSpringAnimation animationWithPropertyNamed:kPOPLayerRotation];
+    bottomRotate.toValue = @(M_PI/4);
+    bottomRotate.springBounciness = 11;
+    bottomRotate.springSpeed = 18.0f;
+    [self.bottom.layer pop_addAnimation:bottomRotate forKey:@"bottomRotate"];
+}
+
+```
+
+Pop的旋转动画时在layer上操作的（看到kPOPLayerRotation了没），所以我们将动画添加到支撑这些视图的layer上。
+
+我们向上旋转一根线、向下旋转一根线所以它们应该在中间交叉，对吗？让我们看看我们得到了什么。
+
+
+----------
+![](http://img.blog.csdn.net/20160818093016580)
+
+
+----------
+额，直观地说，这可能并不是你期待的样子。旋转动画让线条变成这样的原因是没跟线条都是围绕着它们layer的中心旋转的。所以这些视图会像跷跷板一样旋转，而不是我们想要的在中间交叉的样子。我们可以改变layer旋转的锚点，但这有点麻烦，因为这样做会重定位layer并且我们需要调整框架，这纯粹是找麻烦。所以，更简单的做法是，我们可以就将顶部线下移一点，然后将底部的线上移一旦，然后重叠它们。
+
+```objective-c
+// 重定位顶部的线到按钮的中间
+POPSpringAnimation *topPosition =
+    [self.top.layer pop_animationForKey:@"topPosition"];
+
+if (topPosition) {
+    topPosition.toValue = @(29);
+} else {
+    topPosition =
+        [POPSpringAnimation animationWithPropertyNamed:kPOPLayerTranslationY];
+    topPosition.toValue = @(29);
+    topPosition.springBounciness = 0;
+    topPosition.springSpeed = 18.0f;
+    [self.top.layer pop_addAnimation:topPosition forKey:@"topPosition"];
+}
+
+// 重定位底部的线到按钮的中间
+POPSpringAnimation *bottomPosition =
+    [self.bottom.layer pop_animationForKey:@"bottomPosition"];
+
+if (bottomPosition) {
+    bottomPosition.toValue = @(-29);
+} else {
+    bottomPosition =
+        [POPSpringAnimation animationWithPropertyNamed:kPOPLayerTranslationY];
+    bottomPosition.toValue = @(-29);
+    bottomPosition.springBounciness = 0;
+    bottomPosition.springSpeed = 18.0f;
+    [self.bottom.layer pop_addAnimation:bottomPosition forKey:@"bottomPosition"];
+}
+```
+
+经过一些测试和试错，我决定将顶部的线下移29像素，底部的线上移29像素，这样会让它们重合的最好。你也可以做一些三角几何计算来得出这个值。我们使用kPOPLayerTranslationY动画来让两根线旋转到按钮中间的X。
+
+
+----------
+![](http://img.blog.csdn.net/20160818093806575)
+
+
+----------
+完成了！很好吧？现在，当你点击按钮，它会将三根线变成两根线，但当用户再次点击时会发生什么呢？这时候，不会发生任何事情，因为我们没有实现任何其他条件分支的逻辑来将X变回三根线。幸运的是，我们可以很简单地复制粘贴动画，但是要将toValue值改为初始值。比如说，我们需要将两根线都旋转回0度，记得要移动29像素，并将它们的颜色改回白色。还有要将中间的线淡入回100%不透明。这样就全部完成了，我们得到了一个漂亮的汉堡按钮。
+
+
+----------
+![](http://img.blog.csdn.net/20160818094224373)
 
 
 ----------
